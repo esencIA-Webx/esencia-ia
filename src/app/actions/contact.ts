@@ -30,7 +30,7 @@ export async function sendContactEmail(formData: ContactFormData) {
         }
 
         // Send email using Resend
-        const { data, error } = await resend.emails.send({
+        const { data: _data, error } = await resend.emails.send({
             from: "Esencia IA <onboarding@resend.dev>", // You'll need to update this with your verified domain
             to: ["contacto@esencia-ia.com"], // Replace with your actual email
             subject: `Nuevo mensaje de contacto de ${formData.name}`,

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Layers, Zap, CheckCircle, FileText, Layout, Code } from "lucide-react"
+import { Layers, CheckCircle, FileText, Layout, Code } from "lucide-react"
 
 export function CustomDev() {
     return (
@@ -84,7 +84,7 @@ export function CustomDev() {
                         </div>
                         <div className="mt-8 pt-8 border-t border-white/10">
                             <p className="text-lg font-medium tracking-wide text-white/80 leading-relaxed italic">
-                                "Este enfoque garantiza sitios claros, profesionales y enfocados en resultados, pensados para crecer junto a tu proyecto."
+                                &quot;Este enfoque garantiza sitios claros, profesionales y enfocados en resultados, pensados para crecer junto a tu proyecto.&quot;
                             </p>
                         </div>
                     </motion.div>

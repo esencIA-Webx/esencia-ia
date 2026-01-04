@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Laptop, Building2, ShoppingCart, ArrowRight } from "lucide-react"
+import { Check, ArrowRight } from "lucide-react"
 
 // Updated content based on user request
 const servicesData = [
