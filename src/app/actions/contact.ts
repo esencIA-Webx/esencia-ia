@@ -55,10 +55,10 @@ export async function sendContactEmail(formData: ContactFormData) {
         const result = await response.json()
 
         if (!result.success) {
-            console.error("Web3Forms Error:", result)
+            console.error("Web3Forms API Error Result:", result)
             return {
                 success: false,
-                error: "Error al enviar el mensaje. Por favor intenta nuevamente."
+                error: result.message || "Error al enviar el mensaje por parte de la API."
             }
         }
 
@@ -67,10 +67,10 @@ export async function sendContactEmail(formData: ContactFormData) {
             message: "¡Mensaje enviado exitosamente! Te contactaremos pronto."
         }
     } catch (error) {
-        console.error("Unexpected error:", error)
+        console.error("DEBUG - Trace de error completo:", error)
         return {
             success: false,
-            error: "Error inesperado. Por favor intenta nuevamente."
+            error: `Error interno: ${error instanceof Error ? error.message : 'Error desconocido'}`
         }
     }
 }
