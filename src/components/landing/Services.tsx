@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, ArrowRight } from "lucide-react"
+import Image from "next/image"
 
 // Updated content based on user request
 const servicesData = [
@@ -215,13 +216,16 @@ export function Services() {
                                                     loop
                                                     muted
                                                     playsInline
+                                                    preload="none"
                                                     className="h-full w-full object-cover hover:scale-110 transition-transform duration-1000"
                                                 />
                                             ) : (
-                                                <img
+                                                <Image
                                                     src={activeData.image}
                                                     alt={activeData.title}
-                                                    className="h-full w-full object-cover hover:scale-110 transition-transform duration-1000"
+                                                    fill
+                                                    sizes="(max-width: 1024px) 100vw, 50vw"
+                                                    className="object-cover hover:scale-110 transition-transform duration-1000"
                                                 />
                                             )}
                                             {/* Decorative element */}

@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 
 export function About() {
     return (
@@ -63,10 +64,11 @@ export function About() {
                         {/* Main Large Image */}
                         <div className="relative h-full w-full overflow-hidden border border-white/10">
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent z-10" />
-                            <img
+                            <Image
                                 src="/images/about-mockup.png"
                                 alt="Diseño Estratégico"
-                                className="h-full w-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </div>
 
@@ -79,10 +81,11 @@ export function About() {
                             className="absolute -bottom-8 -left-8 lg:-bottom-12 lg:-left-12 w-48 h-48 lg:w-64 lg:h-64 overflow-hidden border-4 border-black shadow-2xl"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-secondary/30 to-transparent z-10" />
-                            <img
+                            <Image
                                 src="/images/about-mockup.png"
                                 alt="Detalle de diseño"
-                                className="h-full w-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </motion.div>
                     </motion.div>

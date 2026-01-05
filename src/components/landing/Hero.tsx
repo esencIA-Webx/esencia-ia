@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import Link from "next/link"
 import { useRef } from "react"
+import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 
 export function Hero() {
@@ -44,7 +45,13 @@ export function Hero() {
                         transition={{ delay: 0.2, duration: 0.8 }}
                         className="mb-8 relative w-32 h-32 md:w-40 md:h-40"
                     >
-                        <img src="/logo.png" alt="Esencia IA Logo" className="object-contain w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                        <Image
+                            src="/logo.png"
+                            alt="Esencia IA Logo"
+                            fill
+                            priority
+                            className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                        />
                     </motion.div>
 
                     <h1 className="text-6xl font-black tracking-widest sm:text-8xl md:text-9xl mb-4">

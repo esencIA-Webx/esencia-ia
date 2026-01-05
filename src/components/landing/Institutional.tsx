@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 
 export function Institutional() {
     return (
@@ -62,10 +63,11 @@ export function Institutional() {
                             className="relative col-span-1 row-span-2 overflow-hidden border border-white/10"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent z-10" />
-                            <img
+                            <Image
                                 src="/images/about-mockup.png"
                                 alt="Institucional"
-                                className="h-full w-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </motion.div>
 
@@ -78,10 +80,11 @@ export function Institutional() {
                             className="relative overflow-hidden border border-white/10"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-transparent z-10" />
-                            <img
+                            <Image
                                 src="/images/about-mockup.png"
                                 alt="Educación"
-                                className="h-full w-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </motion.div>
 
