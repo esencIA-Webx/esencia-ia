@@ -1,9 +1,5 @@
 "use server"
 
-import { Resend } from "resend"
-
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export interface ContactFormData {
     name: string
     email: string
@@ -29,22 +25,37 @@ export async function sendContactEmail(formData: ContactFormData) {
             }
         }
 
-        // Send email using Resend
-        const { data: _data, error } = await resend.emails.send({
-            from: "Esencia IA <onboarding@resend.dev>", // You'll need to update this with your verified domain
-            to: ["contacto@esencia-ia.com"], // Replace with your actual email
-            subject: `Nuevo mensaje de contacto de ${formData.name}`,
-            html: `
-                <h2>Nuevo mensaje de contacto</h2>
-                <p><strong>Nombre:</strong> ${formData.name}</p>
-                <p><strong>Email:</strong> ${formData.email}</p>
-                <p><strong>Mensaje:</strong></p>
-                <p>${formData.message.replace(/\n/g, '<br>')}</p>
-            `,
+        const accessKey = process.env.WEB3FORMS_ACCESS_KEY
+
+        if (!accessKey) {
+            console.error("WEB3FORMS_ACCESS_KEY is not defined")
+            return {
+                success: false,
+                error: "Error de configuración en el servidor"
+            }
+        }
+
+        // Send email using Web3Forms
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                access_key: accessKey,
+                name: formData.name,
+                email: formData.email,
+                message: formData.message,
+                subject: `Nuevo mensaje de contacto de ${formData.name}`,
+                from_name: "Esencia IA Web",
+            }),
         })
 
-        if (error) {
-            console.error("Error sending email:", error)
+        const result = await response.json()
+
+        if (!result.success) {
+            console.error("Web3Forms Error:", result)
             return {
                 success: false,
                 error: "Error al enviar el mensaje. Por favor intenta nuevamente."
