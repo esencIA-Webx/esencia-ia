@@ -50,7 +50,7 @@ export async function sendContactEmail(formData: ContactFormData) {
         // Configurar el contenido del mail
         const mailOptions = {
             from: `"Web Esencia IA" <${emailUser}>`,
-            to: "contacto@esencia-ia.com", // O el mail donde quieras recibir las consultas
+            to: emailUser, // Ahora se envía a tu propia cuenta para que lo recibas seguro
             subject: `Nuevo mensaje de contacto de ${formData.name}`,
             replyTo: formData.email, // Para que al darle a "Responder" se le escriba al cliente
             text: `Nombre: ${formData.name}\nEmail: ${formData.email}\nMensaje: ${formData.message}`,
