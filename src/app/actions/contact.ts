@@ -1,5 +1,7 @@
 "use server"
 
+import nodemailer from "nodemailer"
+
 export interface ContactFormData {
     name: string
     email: string
@@ -25,64 +27,58 @@ export async function sendContactEmail(formData: ContactFormData) {
             }
         }
 
-        const accessKey = process.env.WEB3FORMS_ACCESS_KEY
+        const emailUser = process.env.EMAIL_USER
+        const emailPass = process.env.EMAIL_PASS
 
-        if (!accessKey) {
-            console.error("WEB3FORMS_ACCESS_KEY is not defined")
+        if (!emailUser || !emailPass) {
+            console.error("DEBUG: Faltan variables de entorno EMAIL_USER o EMAIL_PASS")
             return {
                 success: false,
-                error: "Error de configuración en el servidor"
+                error: "Error de configuración: Credenciales de correo no detectadas."
             }
         }
 
-        // Send email using Web3Forms
-        const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
+        // Configurar el transporte de Nodemailer para Gmail
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: emailUser,
+                pass: emailPass,
             },
-            body: JSON.stringify({
-                access_key: accessKey,
-                name: formData.name,
-                email: formData.email,
-                message: formData.message,
-                subject: `Nuevo mensaje de contacto de ${formData.name}`,
-                from_name: "Esencia IA Web",
-            }),
         })
 
-        // Obtener el texto de la respuesta primero para diagnosticar
-        const responseText = await response.text()
-
-        let result
-        try {
-            result = JSON.parse(responseText)
-        } catch (e) {
-            console.error("La respuesta no es JSON:", responseText.substring(0, 100))
-            return {
-                success: false,
-                error: `Error de la API (Status ${response.status}): El servidor no respondió en formato JSON.`
-            }
+        // Configurar el contenido del mail
+        const mailOptions = {
+            from: `"Web Esencia IA" <${emailUser}>`,
+            to: "contacto@esencia-ia.com", // O el mail donde quieras recibir las consultas
+            subject: `Nuevo mensaje de contacto de ${formData.name}`,
+            replyTo: formData.email, // Para que al darle a "Responder" se le escriba al cliente
+            text: `Nombre: ${formData.name}\nEmail: ${formData.email}\nMensaje: ${formData.message}`,
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;">
+                    <h2 style="color: #333; border-bottom: 2px solid #6366f1; padding-bottom: 10px;">Nuevo contacto desde la Web</h2>
+                    <p><strong>Nombre:</strong> ${formData.name}</p>
+                    <p><strong>Email:</strong> ${formData.email}</p>
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                        <p><strong>Mensaje:</strong></p>
+                        <p style="white-space: pre-wrap;">${formData.message}</p>
+                    </div>
+                </div>
+            `,
         }
 
-        if (!result.success) {
-            console.error("Web3Forms API Error Result:", result)
-            return {
-                success: false,
-                error: result.message || "Error al enviar el mensaje por parte de la API."
-            }
-        }
+        // Enviar el correo
+        await transporter.sendMail(mailOptions)
 
         return {
             success: true,
             message: "¡Mensaje enviado exitosamente! Te contactaremos pronto."
         }
     } catch (error) {
-        console.error("DEBUG - Trace de error completo:", error)
+        console.error("DEBUG - Error en Nodemailer:", error)
         return {
             success: false,
-            error: `Error interno: ${error instanceof Error ? error.message : 'Error desconocido'}`
+            error: `Error al enviar el mensaje: ${error instanceof Error ? error.message : 'Error desconocido'}`
         }
     }
 }
