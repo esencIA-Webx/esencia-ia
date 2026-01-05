@@ -52,7 +52,19 @@ export async function sendContactEmail(formData: ContactFormData) {
             }),
         })
 
-        const result = await response.json()
+        // Obtener el texto de la respuesta primero para diagnosticar
+        const responseText = await response.text()
+
+        let result
+        try {
+            result = JSON.parse(responseText)
+        } catch (e) {
+            console.error("La respuesta no es JSON:", responseText.substring(0, 100))
+            return {
+                success: false,
+                error: `Error de la API (Status ${response.status}): El servidor no respondió en formato JSON.`
+            }
+        }
 
         if (!result.success) {
             console.error("Web3Forms API Error Result:", result)
