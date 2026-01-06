@@ -58,16 +58,16 @@ export function Contact() {
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="space-y-8"
+                        className="space-y-6 md:space-y-8"
                     >
-                        <h2 className="text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-black font-sans">
+                        <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-[1.1] text-black font-sans">
                             ¿Listo para
-                            <br />
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">profesionalizar</span>
-                            <span className="block">tu proyecto?</span>
+                            <br className="hidden md:block" />
+                            <span className="md:block text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] md:hover:bg-right transition-[background-position] duration-500 cursor-default"> profesionalizar </span>
+                            <span className="md:block">tu proyecto?</span>
                         </h2>
-                        <div className="border-l-4 border-primary pl-6">
-                            <p className="text-xl font-semibold text-black/90 font-sans tracking-wide">
+                        <div className="border-l-4 border-primary pl-4 md:pl-6">
+                            <p className="text-lg md:text-xl font-semibold text-black/90 font-sans tracking-wide">
                                 Si necesitás una web profesional, con estructura, claridad y criterio, podés escribirnos para conversar sobre tu proyecto.
                             </p>
                         </div>

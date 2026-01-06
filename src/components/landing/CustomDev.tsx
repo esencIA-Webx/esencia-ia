@@ -79,8 +79,8 @@ export function CustomDev() {
                                     }`}
                             >
                                 <span className={`inline-block text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none relative ${activeStep === step.id
-                                        ? "text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%]"
-                                        : "text-white"
+                                    ? "text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%]"
+                                    : "text-white"
                                     }`}>
                                     {step.id}
                                     <span

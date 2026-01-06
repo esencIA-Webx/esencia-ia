@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, ArrowRight } from "lucide-react"
+import Image from "next/image"
 
 // Updated content based on user request
 const servicesData = [
@@ -155,10 +156,19 @@ export function Services() {
                                             transition={{ delay: 0.3 }}
                                             className="mb-8"
                                         >
-                                            <h4 className="text-sm font-black uppercase tracking-[0.2em] text-neutral-400 mb-6">Incluye</h4>
+                                            <h4 className="text-sm font-black uppercase tracking-[0.2em] text-neutral-400 mb-4 md:mb-6">Incluye</h4>
                                             <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
-                                                {activeData.includes.map((item, idx) => (
+                                                {activeData.includes.slice(0, 4).map((item, idx) => (
                                                     <li key={idx} className="flex items-start gap-3 text-neutral-600 text-sm">
+                                                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                                        <span>{item}</span>
+                                                    </li>
+                                                ))}
+                                                <li className="text-primary/60 text-xs italic md:hidden">
+                                                    + {activeData.includes.length - 4} más...
+                                                </li>
+                                                {activeData.includes.slice(4).map((item, idx) => (
+                                                    <li key={idx + 4} className="hidden md:flex items-start gap-3 text-neutral-600 text-sm">
                                                         <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                                                         <span>{item}</span>
                                                     </li>
@@ -171,7 +181,7 @@ export function Services() {
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.4 }}
-                                            className="mb-10 p-4 bg-white/50 border border-neutral-200 rounded-sm"
+                                            className="mb-10 p-4 bg-white/50 border border-neutral-200 rounded-sm hidden md:block"
                                         >
                                             <h4 className="text-xs font-bold uppercase text-neutral-400 mb-2">Extras opcionales</h4>
                                             <p className="text-sm text-neutral-500 italic">{activeData.extras}</p>
@@ -197,7 +207,7 @@ export function Services() {
                                     </div>
 
                                     {/* Image Column */}
-                                    <div className="relative flex items-center justify-center [perspective:1000px]">
+                                    <div className="hidden lg:flex relative items-center justify-center [perspective:1000px]">
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9, rotateY: 0, x: 50 }}
                                             animate={{ opacity: 1, scale: 1, rotateY: -15, x: 0 }}
@@ -215,13 +225,16 @@ export function Services() {
                                                     loop
                                                     muted
                                                     playsInline
+                                                    preload="none"
                                                     className="h-full w-full object-cover hover:scale-110 transition-transform duration-1000"
                                                 />
                                             ) : (
-                                                <img
+                                                <Image
                                                     src={activeData.image}
                                                     alt={activeData.title}
-                                                    className="h-full w-full object-cover hover:scale-110 transition-transform duration-1000"
+                                                    fill
+                                                    sizes="(max-width: 1024px) 100vw, 50vw"
+                                                    className="object-cover hover:scale-110 transition-transform duration-1000"
                                                 />
                                             )}
                                             {/* Decorative element */}

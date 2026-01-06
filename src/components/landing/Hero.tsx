@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import Link from "next/link"
 import { useRef } from "react"
+import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 
 export function Hero() {
@@ -44,14 +45,20 @@ export function Hero() {
                         transition={{ delay: 0.2, duration: 0.8 }}
                         className="mb-8 relative w-32 h-32 md:w-40 md:h-40"
                     >
-                        <img src="/logo.png" alt="Esencia IA Logo" className="object-contain w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                        <Image
+                            src="/logo.png"
+                            alt="Esencia IA Logo"
+                            fill
+                            priority
+                            className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                        />
                     </motion.div>
 
-                    <h1 className="text-6xl font-black tracking-widest sm:text-8xl md:text-9xl mb-4">
-                        ESENC<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">IA</span>
+                    <h1 className="text-5xl font-black tracking-widest sm:text-8xl md:text-9xl mb-4">
+                        ESENC<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] md:hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">IA</span>
                     </h1>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white/80 tracking-widest uppercase">
-                        Diseño web estratégico
+                    <h2 className="text-lg sm:text-3xl md:text-4xl font-semibold text-white/80 tracking-widest uppercase">
+                        Diseño & Estrategia Digital
                     </h2>
                 </motion.div>
 
