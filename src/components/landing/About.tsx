@@ -81,7 +81,6 @@ export function About() {
                             transition={{ duration: 0.8, delay: 0.3 }}
                             className="absolute -bottom-8 -left-8 lg:-bottom-12 lg:-left-12 w-48 h-48 lg:w-64 lg:h-64 overflow-hidden border-4 border-black shadow-2xl hidden lg:block"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-secondary/30 to-transparent z-10" />
                             <Image
                                 src="/images/hero-small-main.png"
                                 alt="Detalle de diseño"
