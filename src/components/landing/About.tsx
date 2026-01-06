@@ -65,7 +65,7 @@ export function About() {
                         <div className="relative h-full w-full overflow-hidden border border-white/10">
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent z-10" />
                             <Image
-                                src="/images/about-mockup.png"
+                                src="/images/about-main-new.png"
                                 alt="Diseño Estratégico"
                                 fill
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
