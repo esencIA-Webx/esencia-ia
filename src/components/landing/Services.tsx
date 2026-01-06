@@ -207,7 +207,7 @@ export function Services() {
                                     </div>
 
                                     {/* Image Column */}
-                                    <div className="relative flex items-center justify-center [perspective:1000px]">
+                                    <div className="hidden lg:flex relative items-center justify-center [perspective:1000px]">
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.9, rotateY: 0, x: 50 }}
                                             animate={{ opacity: 1, scale: 1, rotateY: -15, x: 0 }}
