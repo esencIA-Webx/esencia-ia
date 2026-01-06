@@ -141,7 +141,7 @@ export function CustomDev() {
                                         {activeData?.id}
                                     </span>
                                     <div className="relative z-10">
-                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-all duration-500 mb-8 w-fit">
+                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-all duration-500 mb-8 w-fit pb-2">
                                             {activeData?.title}
                                         </h3>
                                         <p className="text-lg md:text-xl text-neutral-600 leading-relaxed font-light mb-12">
