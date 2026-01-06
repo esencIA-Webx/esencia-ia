@@ -21,7 +21,7 @@ export function About() {
                             <h2 className="text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.1] text-white">
                                 Diseño web
                                 <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">con propósito.</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">con propósito.</span>
                             </h2>
                         </div>
 
@@ -83,7 +83,7 @@ export function About() {
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-secondary/30 to-transparent z-10" />
                             <Image
-                                src="/images/about-mockup.png"
+                                src="/images/hero-small-main.png"
                                 alt="Detalle de diseño"
                                 fill
                                 sizes="(max-width: 1024px) 256px, 256px"
