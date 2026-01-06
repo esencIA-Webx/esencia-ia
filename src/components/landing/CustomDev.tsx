@@ -53,9 +53,9 @@ export function CustomDev() {
                     className="text-center max-w-4xl mx-auto"
                 >
                     <h2 className="text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.1] mb-6">
-                        PROCESO Y <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">ENFOQUE</span>
+                        PROCESO Y <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">ENFOQUE</span>
                     </h2>
-                    <div className="border-l-4 border-secondary pl-6 inline-block">
+                    <div className="border-l-4 border-primary pl-6 inline-block">
                         <p className="text-xl font-semibold text-white/90 text-left">
                             Nuestro trabajo no empieza con una pantalla en blanco, sino con una comprensión profunda de cada proyecto.
                             <br className="hidden md:block" />
@@ -75,16 +75,16 @@ export function CustomDev() {
                             <button
                                 key={step.id}
                                 onClick={() => setActiveStep(activeStep === step.id ? null : step.id)}
-                                className={`group relative py-2 transition-all duration-300 ${activeStep === step.id ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100"
+                                className={`group relative py-4 transition-all duration-300 ${activeStep === step.id ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100"
                                     }`}
                             >
-                                <span className={`inline-block text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none relative ${activeStep === step.id
-                                    ? "text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%]"
+                                <span className={`inline-block text-6xl md:text-7xl font-black tracking-tighter uppercase leading-none relative ${activeStep === step.id
+                                    ? "text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%]"
                                     : "text-white"
                                     }`}>
                                     {step.id}
                                     <span
-                                        className={`absolute -bottom-1 right-0 w-full h-[3px] bg-gradient-to-r from-secondary via-primary to-secondary transition-all duration-500 ${activeStep === step.id ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0"
+                                        className={`absolute -bottom-2 left-0 w-full h-[4px] bg-gradient-to-r from-primary via-accent to-secondary transition-all duration-500 ${activeStep === step.id ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0"
                                             }`}
                                     />
                                 </span>
@@ -113,9 +113,9 @@ export function CustomDev() {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
                                     <div className="absolute bottom-12 left-12 max-w-lg pointer-events-none">
-                                        <h3 className="text-5xl text-white font-black uppercase tracking-tighter mb-4">
+                                        <h3 className="text-5xl text-white font-black uppercase tracking-tighter mb-4 cursor-pointer hover:scale-105 transition-transform duration-300">
                                             Tu visión, <br />
-                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">
+                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">
                                                 Nuestra estrategia
                                             </span>
                                         </h3>
@@ -141,7 +141,7 @@ export function CustomDev() {
                                         {activeData?.id}
                                     </span>
                                     <div className="relative z-10">
-                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-black mb-8">
+                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary mb-8">
                                             {activeData?.title}
                                         </h3>
                                         <p className="text-lg md:text-xl text-neutral-600 leading-relaxed font-light mb-12">
@@ -157,14 +157,14 @@ export function CustomDev() {
                                 </div>
 
                                 {/* Image Section */}
-                                <div className="flex-1 relative min-h-[300px] lg:min-h-full bg-neutral-900 border-l border-neutral-100">
+                                <div className="flex-1 relative min-h-[300px] lg:min-h-full bg-[#FFFFF0] border-l border-neutral-100">
                                     <div className="absolute inset-2 overflow-hidden rounded-sm">
                                         {/* Unified Image Display */}
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black">
+                                        <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFF0]">
                                             <img
                                                 src={activeData?.image}
                                                 alt={activeData?.title}
-                                                className="w-full h-full object-contain p-4 mix-blend-screen"
+                                                className="w-full h-full object-contain p-4"
                                             />
                                             {/* Removed text overlay as the images are self-explanatory neon icons now */}
                                         </div>
