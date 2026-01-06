@@ -8,31 +8,31 @@ const processSteps = [
         id: 1,
         title: "Análisis del proyecto",
         description: "El proceso comienza con una primera comunicación para conocer el emprendimiento, las ideas y los objetivos. Analizamos el negocio, el público y el contexto para definir una estrategia clara desde el inicio.",
-        image: "/images/procesos-1-analysis.png",
+        image: "/images/procesos-1-analisis-new.png",
     },
     {
         id: 2,
         title: "Estructura y planificación",
         description: "A partir de esa primera charla, enviamos un formulario con preguntas estratégicas, estructurales y de diseño. Con esta información organizamos el contenido y definimos el recorrido del usuario, guiándolo de forma simple y efectiva hacia la acción.",
-        image: "/images/procesos-2-structure.png",
+        image: "/images/procesos-2-planificacion-new.png",
     },
     {
         id: 3,
         title: "Diseño visual",
         description: "Creamos una maqueta o diseño inicial alineado a la identidad del proyecto. La interfaz se va moldeando junto al cliente mediante intercambios, revisiones y ajustes, buscando siempre claridad, coherencia y confianza desde el primer vistazo.",
-        image: "/images/procesos-3-design.png",
+        image: "/images/procesos-3-diseno-new.png",
     },
     {
         id: 4,
         title: "Desarrollo técnico",
         description: "Una vez aprobado el diseño y el presupuesto, se solicita una seña del 50% y se avanza en el desarrollo del sitio. Implementamos tecnología optimizada para velocidad, correcto funcionamiento y crecimiento futuro.",
-        image: "/images/procesos-4-development.png",
+        image: "/images/procesos-4-desarrollo-new.png",
     },
     {
         id: 5,
         title: "Ajustes finales y entrega",
         description: "Presentamos una versión final para cerrar detalles, responder consultas y realizar los últimos ajustes. Dejamos el sitio online y listo para recibir visitas, consultas o ventas desde el primer día.",
-        image: "/images/procesos-5-delivery.png",
+        image: "/images/procesos-5-entrega-new.png",
     },
 ]
 
@@ -107,7 +107,7 @@ export function CustomDev() {
                                 {/* Active Large Cover Image */}
                                 <div className="absolute inset-0 bg-neutral-900">
                                     <img
-                                        src="/images/procesos-cover.jpg"
+                                        src="/images/procesos-cover-new.png"
                                         alt="Proceso y Enfoque"
                                         className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity duration-1000 scale-105 group-hover:scale-100"
                                     />
