@@ -53,7 +53,7 @@ export function CustomDev() {
                     className="text-center max-w-4xl mx-auto"
                 >
                     <h2 className="text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.1] mb-6">
-                        PROCESO Y <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">ENFOQUE</span>
+                        PROCESO Y <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">ENFOQUE</span>
                     </h2>
                     <div className="border-l-4 border-primary pl-6 inline-block">
                         <p className="text-xl font-semibold text-white/90 text-left">
@@ -113,9 +113,9 @@ export function CustomDev() {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
                                     <div className="absolute bottom-12 left-12 max-w-lg pointer-events-none">
-                                        <h3 className="text-5xl text-white font-black uppercase tracking-tighter mb-4 cursor-pointer hover:scale-105 transition-transform duration-300">
+                                        <h3 className="text-5xl text-white font-black uppercase tracking-tighter mb-4 cursor-pointer hover:scale-105 transition-transform duration-300 group/title">
                                             Tu visión, <br />
-                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">
+                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] group-hover/title:bg-[100%_0%] transition-all duration-500">
                                                 Nuestra estrategia
                                             </span>
                                         </h3>
@@ -141,7 +141,7 @@ export function CustomDev() {
                                         {activeData?.id}
                                     </span>
                                     <div className="relative z-10">
-                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary mb-8">
+                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-all duration-500 mb-8 w-fit">
                                             {activeData?.title}
                                         </h3>
                                         <p className="text-lg md:text-xl text-neutral-600 leading-relaxed font-light mb-12">
