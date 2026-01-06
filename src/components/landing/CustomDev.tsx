@@ -70,7 +70,7 @@ export function CustomDev() {
                 <div className="grid grid-cols-1 lg:grid-cols-[0.6fr_1.2fr_1.2fr] gap-12 lg:gap-8 items-stretch min-h-[600px]">
 
                     {/* Left Column: Navigation */}
-                    <div className="relative order-3 lg:order-1 flex lg:flex-col justify-center gap-4 lg:gap-0 lg:border-r border-white/20 lg:pr-12 lg:text-right z-20">
+                    <div className="relative order-1 lg:order-1 flex lg:flex-col justify-center gap-4 lg:gap-0 lg:border-r border-white/20 lg:pr-12 lg:text-right z-20">
                         {processSteps.map((step) => (
                             <button
                                 key={step.id}
@@ -102,7 +102,7 @@ export function CustomDev() {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.5 }}
-                                className="order-1 lg:order-2 lg:col-span-2 relative h-full min-h-[500px] overflow-hidden rounded-sm group"
+                                className="order-2 lg:order-2 lg:col-span-2 relative h-full min-h-[500px] overflow-hidden rounded-sm group"
                             >
                                 {/* Active Large Cover Image */}
                                 <div className="absolute inset-0 bg-neutral-900">
@@ -133,7 +133,7 @@ export function CustomDev() {
                                 animate={{ clipPath: "inset(0 0 0 0%)", opacity: 1 }}
                                 exit={{ clipPath: "inset(0 0 0 100%)", opacity: 0 }}
                                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                                className="order-1 lg:order-2 lg:col-span-2 relative z-10 bg-[#FFFFF0] rounded-sm shadow-xl flex flex-col lg:flex-row overflow-hidden min-h-[500px]"
+                                className="order-2 lg:order-2 lg:col-span-2 relative z-10 bg-[#FFFFF0] rounded-sm shadow-xl flex flex-col lg:flex-row overflow-hidden min-h-[500px]"
                             >
                                 {/* Text Section */}
                                 <div className="flex-1 p-8 md:p-12 flex flex-col justify-center relative">
