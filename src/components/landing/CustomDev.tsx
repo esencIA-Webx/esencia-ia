@@ -1,16 +1,51 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { Layers, CheckCircle, FileText, Layout, Code } from "lucide-react"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+
+const processSteps = [
+    {
+        id: 1,
+        title: "Análisis del proyecto",
+        description: "El proceso comienza con una primera comunicación para conocer el emprendimiento, las ideas y los objetivos. Analizamos el negocio, el público y el contexto para definir una estrategia clara desde el inicio.",
+        image: "/images/procesos-1-analysis.png",
+    },
+    {
+        id: 2,
+        title: "Estructura y planificación",
+        description: "A partir de esa primera charla, enviamos un formulario con preguntas estratégicas, estructurales y de diseño. Con esta información organizamos el contenido y definimos el recorrido del usuario, guiándolo de forma simple y efectiva hacia la acción.",
+        image: "/images/procesos-2-structure.png",
+    },
+    {
+        id: 3,
+        title: "Diseño visual",
+        description: "Creamos una maqueta o diseño inicial alineado a la identidad del proyecto. La interfaz se va moldeando junto al cliente mediante intercambios, revisiones y ajustes, buscando siempre claridad, coherencia y confianza desde el primer vistazo.",
+        image: "/images/procesos-3-design.png",
+    },
+    {
+        id: 4,
+        title: "Desarrollo técnico",
+        description: "Una vez aprobado el diseño y el presupuesto, se solicita una seña del 50% y se avanza en el desarrollo del sitio. Implementamos tecnología optimizada para velocidad, correcto funcionamiento y crecimiento futuro.",
+        image: "/images/procesos-4-development.png",
+    },
+    {
+        id: 5,
+        title: "Ajustes finales y entrega",
+        description: "Presentamos una versión final para cerrar detalles, responder consultas y realizar los últimos ajustes. Dejamos el sitio online y listo para recibir visitas, consultas o ventas desde el primer día.",
+        image: "/images/procesos-5-delivery.png",
+    },
+]
 
 export function CustomDev() {
-    return (
-        <section id="process" className="py-24 scroll-snap-start relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10" />
-            {/* Grid removed */}
+    const [activeStep, setActiveStep] = useState<number | null>(null)
 
-            <div className="container mx-auto px-4 space-y-16 relative z-10">
-                {/* Section Header */}
+    // Find active data safely
+    const activeData = activeStep ? processSteps.find((s) => s.id === activeStep) : null
+
+    return (
+        <section className="py-24 relative overflow-hidden bg-transparent text-white">
+            {/* Upper Header */}
+            <div className="container mx-auto px-4 mb-16 relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -22,115 +57,122 @@ export function CustomDev() {
                     </h2>
                     <div className="border-l-4 border-secondary pl-6 inline-block">
                         <p className="text-xl font-semibold text-white/90 text-left">
-                            Un método claro que transforma ideas en presencia digital efectiva.
+                            Nuestro trabajo no empieza con una pantalla en blanco, sino con una comprensión profunda de cada proyecto.
+                            <br className="hidden md:block" />
+                            Creemos en el diseño web con propósito: sitios que no solo se ven bien, sino que cumplen un objetivo real.
                         </p>
                     </div>
                 </motion.div>
+            </div>
 
-                {/* Methodology Steps */}
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <div className="space-y-8">
-                            {[
-                                {
-                                    title: "1. Análisis del proyecto",
-                                    desc: "Analizamos tu negocio, tu público y tus objetivos para definir una estrategia clara desde el inicio.",
-                                    icon: FileText
-                                },
-                                {
-                                    title: "2. Estructura del contenido",
-                                    desc: "Organizamos la información y definimos el recorrido del usuario para guiarlo de forma simple hacia la acción.",
-                                    icon: Layers
-                                },
-                                {
-                                    title: "3. Diseño visual",
-                                    desc: "Creamos una interfaz moderna y profesional, alineada a tu identidad, que genere confianza desde el primer vistazo.",
-                                    icon: Layout
-                                },
-                                {
-                                    title: "4. Desarrollo técnico",
-                                    desc: "Implementamos el sitio con tecnología optimizada para velocidad, correcto funcionamiento y crecimiento futuro.",
-                                    icon: Code
-                                },
-                                {
-                                    title: "5. Entrega y puesta en marcha",
-                                    desc: "Dejamos tu sitio online, listo para recibir visitas, consultas o ventas desde el primer día.",
-                                    icon: CheckCircle
-                                },
-                            ].map((step, i) => (
-                                <motion.div
-                                    key={step.title}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="flex gap-4 items-start group"
-                                >
-                                    <div className="mt-1 min-w-10">
-                                        <step.icon className="h-6 w-6 text-secondary group-hover:text-primary transition-colors duration-300" />
+            {/* Main Layout (3 Columns) */}
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-[0.6fr_1.2fr_1.2fr] gap-12 lg:gap-8 items-stretch min-h-[600px]">
+
+                    {/* Left Column: Navigation */}
+                    <div className="relative order-3 lg:order-1 flex lg:flex-col justify-center gap-4 lg:gap-0 lg:border-r border-white/20 lg:pr-12 lg:text-right z-20">
+                        {processSteps.map((step) => (
+                            <button
+                                key={step.id}
+                                onClick={() => setActiveStep(activeStep === step.id ? null : step.id)}
+                                className={`group relative py-2 transition-all duration-300 ${activeStep === step.id ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100"
+                                    }`}
+                            >
+                                <span className={`inline-block text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none relative ${activeStep === step.id
+                                        ? "text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%]"
+                                        : "text-white"
+                                    }`}>
+                                    {step.id}
+                                    <span
+                                        className={`absolute -bottom-1 right-0 w-full h-[3px] bg-gradient-to-r from-secondary via-primary to-secondary transition-all duration-500 ${activeStep === step.id ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0"
+                                            }`}
+                                    />
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Dynamic Content Area (Cols 2 & 3) */}
+                    <AnimatePresence mode="wait">
+                        {!activeStep ? (
+                            /* Cover Image State */
+                            <motion.div
+                                key="cover"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="order-1 lg:order-2 lg:col-span-2 relative h-full min-h-[500px] overflow-hidden rounded-sm group"
+                            >
+                                {/* Active Large Cover Image */}
+                                <div className="absolute inset-0 bg-neutral-900">
+                                    <img
+                                        src="/images/procesos-cover.jpg"
+                                        alt="Proceso y Enfoque"
+                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity duration-1000 scale-105 group-hover:scale-100"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
+                                    <div className="absolute bottom-12 left-12 max-w-lg pointer-events-none">
+                                        <h3 className="text-5xl text-white font-black uppercase tracking-tighter mb-4">
+                                            Tu visión, <br />
+                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-primary to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">
+                                                Nuestra estrategia
+                                            </span>
+                                        </h3>
+                                        <p className="text-white/70 text-lg font-light leading-relaxed">
+                                            Explora cada etapa de nuestro proceso creativo y técnico seleccionando los pasos.
+                                        </p>
                                     </div>
-                                    <div>
-                                        <h4 className="text-lg font-bold tracking-wide mb-1 text-white group-hover:text-secondary transition-colors duration-300">
-                                            {step.title}
-                                        </h4>
-                                        <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                        <div className="mt-8 pt-8 border-t border-white/10">
-                            <p className="text-lg font-medium tracking-wide text-white/80 leading-relaxed italic">
-                                &quot;Este enfoque garantiza sitios claros, profesionales y enfocados en resultados, pensados para crecer junto a tu proyecto.&quot;
-                            </p>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        className="relative h-[500px] overflow-hidden border border-white/10 bg-gradient-to-br from-secondary/10 to-primary/10 rounded-sm group"
-                    >
-                        {/* Process Visual Graphic */}
-                        <div className="absolute inset-0 flex items-center justify-center p-12">
-                            <svg viewBox="0 0 400 400" className="w-full h-full opacity-40 group-hover:opacity-60 transition-opacity duration-700">
-                                <motion.path
-                                    d="M 50 200 Q 200 50 350 200 Q 200 350 50 200"
-                                    fill="none"
-                                    stroke="url(#grad1)"
-                                    strokeWidth="2"
-                                    initial={{ pathLength: 0 }}
-                                    whileInView={{ pathLength: 1 }}
-                                    transition={{ duration: 2, repeat: Infinity, repeatType: "loop", ease: "linear" }}
-                                />
-                                <defs>
-                                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" style={{ stopColor: "var(--primary)", stopOpacity: 1 }} />
-                                        <stop offset="100%" style={{ stopColor: "var(--secondary)", stopOpacity: 1 }} />
-                                    </linearGradient>
-                                </defs>
-                                {/* Strategy Layers Mockup */}
-                                <motion.rect x="100" y="150" width="200" height="40" rx="4" fill="white" fillOpacity="0.05" stroke="white" strokeOpacity="0.1"
-                                    animate={{ y: [150, 140, 150] }} transition={{ duration: 4, repeat: Infinity }} />
-                                <motion.rect x="120" y="200" width="160" height="40" rx="4" fill="white" fillOpacity="0.05" stroke="white" strokeOpacity="0.1"
-                                    animate={{ y: [200, 190, 200] }} transition={{ duration: 4, repeat: Infinity, delay: 0.5 }} />
-                                <motion.rect x="140" y="250" width="120" height="40" rx="4" fill="white" fillOpacity="0.05" stroke="white" strokeOpacity="0.1"
-                                    animate={{ y: [250, 240, 250] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} />
-
-                                {/* Connection lines */}
-                                <line x1="200" y1="100" x2="200" y2="300" stroke="white" strokeOpacity="0.05" strokeWidth="1" strokeDasharray="4 4" />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="text-xl font-black tracking-[0.5em] text-white/20 uppercase pointer-events-none">
-                                    ESTRATEGIA
                                 </div>
-                            </div>
-                        </div>
-                    </motion.div>
+                            </motion.div>
+                        ) : (
+                            /* Active Unified State (Content + Image in one block) */
+                            <motion.div
+                                key={`unified-${activeStep}`}
+                                initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
+                                animate={{ clipPath: "inset(0 0 0 0%)", opacity: 1 }}
+                                exit={{ clipPath: "inset(0 0 0 100%)", opacity: 0 }}
+                                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                                className="order-1 lg:order-2 lg:col-span-2 relative z-10 bg-[#FFFFF0] rounded-sm shadow-xl flex flex-col lg:flex-row overflow-hidden min-h-[500px]"
+                            >
+                                {/* Text Section */}
+                                <div className="flex-1 p-8 md:p-12 flex flex-col justify-center relative">
+                                    <span className="text-[8rem] lg:text-[10rem] font-black text-black/5 leading-none absolute -top-8 -right-4 lg:-right-8 select-none z-0">
+                                        {activeData?.id}
+                                    </span>
+                                    <div className="relative z-10">
+                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-black mb-8">
+                                            {activeData?.title}
+                                        </h3>
+                                        <p className="text-lg md:text-xl text-neutral-600 leading-relaxed font-light mb-12">
+                                            {activeData?.description}
+                                        </p>
+
+                                        <div className="pt-8 border-t border-neutral-200">
+                                            <p className="text-sm font-medium text-neutral-400 italic">
+                                                Trabajamos cada etapa de forma consciente y colaborativa.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Image Section */}
+                                <div className="flex-1 relative min-h-[300px] lg:min-h-full bg-neutral-900 border-l border-neutral-100">
+                                    <div className="absolute inset-2 overflow-hidden rounded-sm">
+                                        {/* Unified Image Display */}
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black">
+                                            <img
+                                                src={activeData?.image}
+                                                alt={activeData?.title}
+                                                className="w-full h-full object-contain p-4 mix-blend-screen"
+                                            />
+                                            {/* Removed text overlay as the images are self-explanatory neon icons now */}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
         </section>
