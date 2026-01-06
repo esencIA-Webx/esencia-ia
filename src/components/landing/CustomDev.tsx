@@ -28,37 +28,42 @@ export function CustomDev() {
                 </motion.div>
 
                 {/* Methodology Steps */}
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                     >
-                        <div className="space-y-8">
+                        <div className="space-y-6 md:space-y-8">
                             {[
                                 {
-                                    title: "1. Análisis del proyecto",
+                                    title: "1. Análisis",
+                                    titleFull: "1. Análisis del proyecto",
                                     desc: "Analizamos tu negocio, tu público y tus objetivos para definir una estrategia clara desde el inicio.",
                                     icon: FileText
                                 },
                                 {
-                                    title: "2. Estructura del contenido",
-                                    desc: "Organizamos la información y definimos el recorrido del usuario para guiarlo de forma simple hacia la acción.",
+                                    title: "2. Contenido",
+                                    titleFull: "2. Estructura del contenido",
+                                    desc: "Organizamos la información y definimos el recorrido del usuario para guiarlo de forma simple.",
                                     icon: Layers
                                 },
                                 {
-                                    title: "3. Diseño visual",
-                                    desc: "Creamos una interfaz moderna y profesional, alineada a tu identidad, que genere confianza desde el primer vistazo.",
+                                    title: "3. Diseño",
+                                    titleFull: "3. Diseño visual",
+                                    desc: "Creamos una interfaz moderna y profesional alineada a tu identidad de marca.",
                                     icon: Layout
                                 },
                                 {
-                                    title: "4. Desarrollo técnico",
-                                    desc: "Implementamos el sitio con tecnología optimizada para velocidad, correcto funcionamiento y crecimiento futuro.",
+                                    title: "4. Desarrollo",
+                                    titleFull: "4. Desarrollo técnico",
+                                    desc: "Implementamos el sitio con tecnología optimizada para velocidad y correcto funcionamiento.",
                                     icon: Code
                                 },
                                 {
-                                    title: "5. Entrega y puesta en marcha",
-                                    desc: "Dejamos tu sitio online, listo para recibir visitas, consultas o ventas desde el primer día.",
+                                    title: "5. Entrega",
+                                    titleFull: "5. Entrega y puesta en marcha",
+                                    desc: "Dejamos tu sitio online, listo para recibir visitas y consultas desde el primer día.",
                                     icon: CheckCircle
                                 },
                             ].map((step, i) => (
@@ -70,21 +75,22 @@ export function CustomDev() {
                                     transition={{ delay: i * 0.1 }}
                                     className="flex gap-4 items-start group"
                                 >
-                                    <div className="mt-1 min-w-10">
-                                        <step.icon className="h-6 w-6 text-secondary group-hover:text-primary transition-colors duration-300" />
+                                    <div className="mt-1 min-w-8 md:min-w-10">
+                                        <step.icon className="h-5 w-5 md:h-6 md:w-6 text-secondary group-hover:text-primary transition-colors duration-300" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-bold tracking-wide mb-1 text-white group-hover:text-secondary transition-colors duration-300">
-                                            {step.title}
+                                        <h4 className="text-base md:text-lg font-bold tracking-wide mb-1 text-white group-hover:text-secondary transition-colors duration-300">
+                                            <span className="hidden md:inline">{step.titleFull}</span>
+                                            <span className="md:hidden">{step.title}</span>
                                         </h4>
-                                        <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
+                                        <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">{step.desc}</p>
                                     </div>
                                 </motion.div>
                             ))}
                         </div>
-                        <div className="mt-8 pt-8 border-t border-white/10">
-                            <p className="text-lg font-medium tracking-wide text-white/80 leading-relaxed italic">
-                                &quot;Este enfoque garantiza sitios claros, profesionales y enfocados en resultados, pensados para crecer junto a tu proyecto.&quot;
+                        <div className="mt-8 pt-6 border-t border-white/10 hidden md:block">
+                            <p className="text-base font-medium tracking-wide text-white/80 leading-relaxed italic">
+                                &quot;Este enfoque garantiza sitios claros, profesionales y enfocados en resultados.&quot;
                             </p>
                         </div>
                     </motion.div>
@@ -93,7 +99,7 @@ export function CustomDev() {
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="relative h-[500px] overflow-hidden border border-white/10 bg-gradient-to-br from-secondary/10 to-primary/10 rounded-sm group"
+                        className="relative h-[300px] md:h-[500px] overflow-hidden border border-white/10 bg-gradient-to-br from-secondary/10 to-primary/10 rounded-sm group hidden lg:block"
                     >
                         {/* Process Visual Graphic */}
                         <div className="absolute inset-0 flex items-center justify-center p-12">

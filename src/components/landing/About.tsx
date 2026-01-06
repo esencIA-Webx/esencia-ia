@@ -34,11 +34,11 @@ export function About() {
 
                         {/* Description */}
                         <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
-                            <p>
+                            <p className="hidden md:block">
                                 Diseñamos sitios pensados para cumplir un objetivo concreto: comunicar con claridad, generar confianza y acompañar el crecimiento de cada proyecto.
                             </p>
                             <p>
-                                Nuestro enfoque combina estrategia, estructura y diseño consciente, entendiendo la web como una herramienta clave para profesionalizar tu presencia digital.
+                                Nuestro enfoque combina estrategia y diseño consciente, entendiendo la web como una herramienta clave para profesionalizar tu presencia digital.
                             </p>
                         </div>
 
@@ -46,7 +46,7 @@ export function About() {
                         <div className="pt-4">
                             <a
                                 href="#contact"
-                                className="inline-flex h-14 items-center justify-center rounded-none border-2 border-primary bg-transparent px-10 text-base font-medium text-white transition-all hover:bg-primary hover:text-white hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50"
+                                className="inline-flex h-12 md:h-14 items-center justify-center rounded-none border-2 border-primary bg-transparent px-8 md:px-10 text-sm md:text-base font-medium text-white transition-all hover:bg-primary hover:text-white hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50"
                             >
                                 Iniciar Conversación
                             </a>
@@ -59,7 +59,7 @@ export function About() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="relative h-[500px] lg:h-[600px]"
+                        className="relative h-[400px] md:h-[500px] lg:h-[600px]"
                     >
                         {/* Main Large Image */}
                         <div className="relative h-full w-full overflow-hidden border border-white/10">
@@ -68,23 +68,25 @@ export function About() {
                                 src="/images/about-mockup.png"
                                 alt="Diseño Estratégico"
                                 fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
                                 className="object-cover"
                             />
                         </div>
 
-                        {/* Smaller Overlapping Image - Bottom Left */}
+                        {/* Smaller Overlapping Image - Bottom Left - Hidden on Mobile */}
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.3 }}
-                            className="absolute -bottom-8 -left-8 lg:-bottom-12 lg:-left-12 w-48 h-48 lg:w-64 lg:h-64 overflow-hidden border-4 border-black shadow-2xl"
+                            className="absolute -bottom-8 -left-8 lg:-bottom-12 lg:-left-12 w-48 h-48 lg:w-64 lg:h-64 overflow-hidden border-4 border-black shadow-2xl hidden lg:block"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-secondary/30 to-transparent z-10" />
                             <Image
                                 src="/images/about-mockup.png"
                                 alt="Detalle de diseño"
                                 fill
+                                sizes="(max-width: 1024px) 256px, 256px"
                                 className="object-cover"
                             />
                         </motion.div>

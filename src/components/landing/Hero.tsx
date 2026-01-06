@@ -54,11 +54,11 @@ export function Hero() {
                         />
                     </motion.div>
 
-                    <h1 className="text-6xl font-black tracking-widest sm:text-8xl md:text-9xl mb-4">
-                        ESENC<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">IA</span>
+                    <h1 className="text-5xl font-black tracking-widest sm:text-8xl md:text-9xl mb-4">
+                        ESENC<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] md:hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">IA</span>
                     </h1>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white/80 tracking-widest uppercase">
-                        Diseño web estratégico
+                    <h2 className="text-lg sm:text-3xl md:text-4xl font-semibold text-white/80 tracking-widest uppercase">
+                        Diseño & Estrategia Digital
                     </h2>
                 </motion.div>
 
