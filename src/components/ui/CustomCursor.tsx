@@ -30,7 +30,7 @@ export function CustomCursor() {
     }, [])
 
     return (
-        <>
+        <div className="hidden md:block">
             <motion.div
                 className="pointer-events-none fixed left-0 top-0 z-[9999] h-4 w-4 rounded-full bg-primary mix-blend-difference"
                 animate={{
@@ -59,6 +59,6 @@ export function CustomCursor() {
                     mass: 0.2,
                 }}
             />
-        </>
+        </div>
     )
 }
