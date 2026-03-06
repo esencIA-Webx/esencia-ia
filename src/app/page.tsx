@@ -1,4 +1,4 @@
-import { Hero } from "@/components/landing/Hero"
+import { HeroTransition } from "@/components/landing/HeroTransition"
 import { About } from "@/components/landing/About"
 import { Services } from "@/components/landing/Services"
 import { VisualContent } from "@/components/landing/VisualContent"
@@ -10,8 +10,7 @@ export default function Home() {
   return (
     <>
       <main className="flex min-h-screen flex-col">
-        <Hero />
-        <About />
+        <HeroTransition />
         <Services />
         <VisualContent />
         <CustomDev />

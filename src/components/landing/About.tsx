@@ -16,29 +16,13 @@ export function About() {
                         transition={{ duration: 0.8 }}
                         className="space-y-8"
                     >
-                        {/* Main Title */}
-                        <div className="space-y-4">
-                            <h2 className="text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.1] text-white">
-                                Diseño web
-                                <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">con propósito.</span>
-                            </h2>
-                        </div>
-
-                        {/* Subtitle */}
-                        <div className="border-l-4 border-primary pl-6">
-                            <p className="text-xl font-semibold text-white/90">
-                                En ESENCIA creamos sitios que cumplen un objetivo real.
-                            </p>
-                        </div>
-
-                        {/* Description */}
-                        <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
-                            <p className="hidden md:block">
-                                Diseñamos sitios pensados para cumplir un objetivo concreto: comunicar con claridad, generar confianza y acompañar el crecimiento de cada proyecto.
-                            </p>
-                            <p>
+                        {/* Description (Title is now provided by transition) */}
+                        <div className="space-y-6">
+                            <p className="border-l-4 border-primary pl-6 text-xl font-semibold text-white/90">
                                 Nuestro enfoque combina estrategia y diseño consciente, entendiendo la web como una herramienta clave para profesionalizar tu presencia digital.
+                            </p>
+                            <p className="text-lg text-muted-foreground leading-relaxed">
+                                Diseñamos sitios pensados para cumplir un objetivo concreto: comunicar con claridad, generar confianza y acompañar el crecimiento de cada proyecto.
                             </p>
                         </div>
 
