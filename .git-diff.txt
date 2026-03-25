@@ -1,0 +1,7 @@
+public/videos/Arte1.mov
+public/videos/Institucion1.mov
+public/videos/Tienda1.mov
+public/videos/producto-ai.mp4
+src/components/landing/HeroTransition.tsx
+src/components/landing/Services.tsx
+src/components/layout/SmoothScroll.tsx

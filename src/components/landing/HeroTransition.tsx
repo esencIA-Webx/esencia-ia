@@ -1,8 +1,12 @@
 "use client"
 
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
+import { motion, useTransform, useMotionValue, animate } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import NextImage from "next/image"
+
+// Puntos de anclaje de animación para emular el scroll original
+const MILESTONES = [0.0, 0.15, 0.48, 0.65, 0.77, 0.87, 1.0];
+const TOTAL_STEPS = MILESTONES.length - 1;
 
 export function HeroTransition() {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -12,6 +16,14 @@ export function HeroTransition() {
     const [logoOffset, setLogoOffset] = useState({ x: 0, y: 0 })
     const [isMobile, setIsMobile] = useState(true)
     const [isMounted, setIsMounted] = useState(false)
+
+    // Virtual Scroll State
+    const [currentStep, setCurrentStep] = useState(0);
+    const isAnimatingRef = useRef(false);
+    const unlockTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // This is the single, hyper-smooth progress variable driven by `animate`
+    const smoothProgress = useMotionValue(0);
 
     useEffect(() => {
         setIsMounted(true)
@@ -61,16 +73,156 @@ export function HeroTransition() {
         return () => window.removeEventListener('resize', checkLayout)
     }, [])
 
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"],
-    })
+    // Efecto que desliza con extrema suavidad de un punto a otro cada vez que cambias de "slide"
+    useEffect(() => {
+        animate(smoothProgress, MILESTONES[currentStep], {
+            duration: 0.6,
+            ease: "easeInOut"
+        });
+    }, [currentStep, smoothProgress]);
 
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 70,
-        damping: 35,
-        restDelta: 0.001
-    })
+    // --- SCROLL EVENT LISTENER & LOCK ---
+    useEffect(() => {
+        if (!isMounted) return;
+
+        // Bloqueo estricto y total del scroll de todo el documento
+        if (currentStep < TOTAL_STEPS) {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden'; // Vital in Next.js
+            window.scrollTo(0, 0); // Fija al usuario forzosamente arriba de todo
+            if ((window as any).lenis) (window as any).lenis.stop();
+            if (unlockTimeoutRef.current) clearTimeout(unlockTimeoutRef.current);
+        } else {
+            // Cuando llega al último slide, retrasamos el desbloqueo.
+            unlockTimeoutRef.current = setTimeout(() => {
+                document.body.style.overflow = '';
+                document.documentElement.style.overflow = ''; // Release the lock
+                if ((window as any).lenis) (window as any).lenis.start();
+            }, 600);
+        }
+
+        let touchStartY = 0;
+
+        const handleWheel = (e: WheelEvent) => {
+            // AISLAMIENTO DE CONTEXTO: Si el usuario ya bajó por la página, Hero debe ignorar el evento de inmediato.
+            if (window.scrollY > 20) return;
+
+            // Protect native escape ONLY if we successfully unlocked (and they are technically scrolling down)
+            if (currentStep === TOTAL_STEPS && document.body.style.overflow === '') {
+                if (window.scrollY > 5) return;
+            }
+
+            // Atrapamos TODOS los eventos de scroll hasta que termine
+            // Si intenta scrollear y no ha terminado los pasos, BLOQUEAMOS NATIVO SIEMPRE
+            if (currentStep < TOTAL_STEPS || document.body.style.overflow === 'hidden') {
+                e.preventDefault();
+            }
+
+            // Bloquea nuevos triggers para que no se sobrepongan muchos tics
+            if (isAnimatingRef.current) {
+                return;
+            }
+
+            const scrollingDown = e.deltaY > 0;
+
+            if (scrollingDown) {
+                if (currentStep < TOTAL_STEPS) {
+                    isAnimatingRef.current = true;
+                    setCurrentStep(prev => prev + 1);
+                    setTimeout(() => { isAnimatingRef.current = false }, 500); // Rápida respuesta para máxima fluidez
+                }
+            } else {
+                if (currentStep > 0) {
+                    isAnimatingRef.current = true;
+                    setCurrentStep(prev => prev - 1);
+                    
+                    // Si scrolea para arriba, re-bloqueamos el framework de inmediato
+                    document.body.style.overflow = 'hidden';
+                    document.documentElement.style.overflow = 'hidden';
+                    window.scrollTo(0, 0);
+                    if ((window as any).lenis) (window as any).lenis.stop();
+                    if (unlockTimeoutRef.current) clearTimeout(unlockTimeoutRef.current);
+                    
+                    setTimeout(() => { isAnimatingRef.current = false }, 500); 
+                }
+            }
+        };
+
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartY = e.touches[0].clientY;
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            // AISLAMIENTO DE CONTEXTO
+            if (window.scrollY > 20) return;
+
+            if (currentStep === TOTAL_STEPS && document.body.style.overflow === '') {
+                if (window.scrollY > 5) return;
+            }
+
+            if (currentStep < TOTAL_STEPS || document.body.style.overflow === 'hidden') {
+                e.preventDefault();
+            }
+
+            if (isAnimatingRef.current) {
+                return;
+            }
+
+            const touchEndY = e.touches[0].clientY;
+            const deltaY = touchStartY - touchEndY;
+
+            if (Math.abs(deltaY) < 40) return; // Ignora movimientos cortitos
+
+            const scrollingDown = deltaY > 0;
+
+            if (scrollingDown) {
+                if (currentStep < TOTAL_STEPS) {
+                    isAnimatingRef.current = true;
+                    setCurrentStep(prev => prev + 1);
+                    setTimeout(() => { isAnimatingRef.current = false }, 500);
+                    touchStartY = touchEndY; 
+                }
+            } else {
+                if (currentStep > 0) {
+                    isAnimatingRef.current = true;
+                    setCurrentStep(prev => prev - 1);
+                    
+                    document.body.style.overflow = 'hidden';
+                    document.documentElement.style.overflow = 'hidden';
+                    window.scrollTo(0, 0);
+                    if ((window as any).lenis) (window as any).lenis.stop();
+                    if (unlockTimeoutRef.current) clearTimeout(unlockTimeoutRef.current);
+                    
+                    setTimeout(() => { isAnimatingRef.current = false }, 500);
+                    touchStartY = touchEndY; 
+                }
+            }
+        };
+
+
+        const scrollTarget = containerRef.current;
+        if (!scrollTarget) return;
+
+        // Eventos no pasivos anclados estrictamente al contenedor para NO ahogar el performance de toda la página
+        scrollTarget.addEventListener('wheel', handleWheel, { passive: false });
+        scrollTarget.addEventListener('touchstart', handleTouchStart, { passive: false });
+        scrollTarget.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+        return () => {
+            scrollTarget.removeEventListener('wheel', handleWheel);
+            scrollTarget.removeEventListener('touchstart', handleTouchStart);
+            scrollTarget.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, [currentStep, isMounted]);
+
+    // Force clear body lock on unmount
+    useEffect(() => {
+        return () => { 
+            document.body.style.overflow = ''; 
+            document.documentElement.style.overflow = '';
+            if ((window as any).lenis) (window as any).lenis.start();
+        };
+    }, []);
 
     // --- ORCHESTRATION ---
 
@@ -138,7 +290,7 @@ export function HeroTransition() {
     const aboutY = useTransform(smoothProgress, [0.80, 0.95], [40, 0])
 
     return (
-        <div ref={containerRef} className="relative h-[300vh] bg-black">
+        <div ref={containerRef} className="relative h-screen bg-black">
             <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col pt-4 md:pt-8 px-6 md:px-12 lg:px-20 pb-8">
 
                 {/* Subtle Grain/Noise Backdrop */}
@@ -268,15 +420,6 @@ export function HeroTransition() {
                     </motion.div>
 
                 </div>
-
-                {/* Progress Scroll Hint */}
-                <motion.div
-                    style={{
-                        scaleY: useTransform(smoothProgress, [0, 1], [1, 0]),
-                        opacity: useTransform(smoothProgress, [0, 0.1], [0.3, 0])
-                    }}
-                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[1px] h-12 md:h-20 bg-gradient-to-b from-white to-transparent origin-bottom"
-                />
             </div>
         </div>
     )
