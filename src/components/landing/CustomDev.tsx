@@ -1,40 +1,96 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const processSteps = [
     {
         id: 1,
         title: "Análisis del proyecto",
-        description: "El proceso comienza con una primera comunicación para conocer el emprendimiento, las ideas y los objetivos. Analizamos el negocio, el público y el contexto para definir una estrategia clara desde el inicio.",
-        image: "/images/procesos-1-analisis-new.png",
+        description: "El proceso comienza con una primera comunicación para conocer el emprendimiento, las ideas y los objetivos. Analizamos el negocio, el público y el contexto para definir una estrategia clara desde el inicio."
     },
     {
         id: 2,
         title: "Estructura y planificación",
-        description: "A partir de esa primera charla, enviamos un formulario con preguntas estratégicas, estructurales y de diseño. Con esta información organizamos el contenido y definimos el recorrido del usuario, guiándolo de forma simple y efectiva hacia la acción.",
-        image: "/images/procesos-2-planificacion-new.png",
+        description: "A partir de esa primera charla, enviamos un formulario con preguntas estratégicas, estructurales y de diseño. Con esta información organizamos el contenido y definimos el recorrido del usuario, guiándolo de forma simple y efectiva hacia la acción."
     },
     {
         id: 3,
         title: "Diseño visual",
-        description: "Creamos una maqueta o diseño inicial alineado a la identidad del proyecto. La interfaz se va moldeando junto al cliente mediante intercambios, revisiones y ajustes, buscando siempre claridad, coherencia y confianza desde el primer vistazo.",
-        image: "/images/procesos-3-diseno-new.png",
+        description: "Creamos una maqueta o diseño inicial alineado a la identidad del proyecto. La interfaz se va moldeando junto al cliente mediante intercambios, revisiones y ajustes, buscando siempre claridad, coherencia y confianza desde el primer vistazo."
     },
     {
         id: 4,
         title: "Desarrollo técnico",
-        description: "Una vez aprobado el diseño y el presupuesto, se solicita una seña del 50% y se avanza en el desarrollo del sitio. Implementamos tecnología optimizada para velocidad, correcto funcionamiento y crecimiento futuro.",
-        image: "/images/procesos-4-desarrollo-new.png",
+        description: "Una vez aprobado el diseño y el presupuesto, se solicita una seña del 50% y se avanza en el desarrollo del sitio. Implementamos tecnología optimizada para velocidad, correcto funcionamiento y crecimiento futuro."
     },
     {
         id: 5,
         title: "Ajustes finales y entrega",
-        description: "Presentamos una versión final para cerrar detalles, responder consultas y realizar los últimos ajustes. Dejamos el sitio online y listo para recibir visitas, consultas o ventas desde el primer día.",
-        image: "/images/procesos-5-entrega-new.png",
+        description: "Presentamos una versión final para cerrar detalles, responder consultas y realizar los últimos ajustes. Dejamos el sitio online y listo para recibir visitas, consultas o ventas desde el primer día."
     },
 ]
+
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!<>-_\\/[]{}—=+*^?#_"
+
+function ScrambleText({ text, className = "", as: Component = "span" }: { text: string, className?: string, as?: any }) {
+    const containerRef = useRef<HTMLElement>(null)
+
+    useEffect(() => {
+        const container = containerRef.current
+        if (!container) return
+
+        // Create spans safely with original text first
+        container.innerHTML = ""
+        const spans: HTMLSpanElement[] = []
+        
+        text.split("").forEach(ch => {
+            if (ch === " " || ch === "\n") {
+                 container.appendChild(document.createTextNode(ch))
+            } else {
+                 const span = document.createElement("span")
+                 // Usamos inline-block para poder fijar el ancho luego
+                 span.className = "inline-block will-change-transform text-center"
+                 span.textContent = ch // Seteamos el texto original para que el DOM calcule su espacio real
+                 span.setAttribute("data-char", ch)
+                 container.appendChild(span)
+                 spans.push(span)
+            }
+        })
+
+        // Esperamos 1 frame para que el navegador renderice y calcule los anchos reales
+        requestAnimationFrame(() => {
+            // Fijamos matemáticamente el ancho de cada letra al pixel exacto
+            spans.forEach(span => {
+                 const width = span.getBoundingClientRect().width
+                 if (width > 0) {
+                     span.style.width = `${width}px`
+                 }
+            })
+
+            // Comenzamos el scramble
+            spans.forEach((el) => {
+                const originalText = el.getAttribute("data-char") || ""
+                let iterations = 0
+                const maxIterations = 10 + Math.random() * 20 
+                
+                const interval = setInterval(() => {
+                    el.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+                    iterations++
+                    
+                    if (iterations >= maxIterations) {
+                        clearInterval(interval)
+                        el.textContent = originalText
+                        // Limpiamos el ancho fijo al terminar por si el usuario redimensiona la ventana
+                        el.style.width = "auto"
+                    }
+                }, 40) 
+            })
+        })
+    }, [text])
+
+    return <Component ref={containerRef} className={className} />
+}
 
 export function CustomDev() {
     const [activeStep, setActiveStep] = useState<number | null>(null)
@@ -57,9 +113,9 @@ export function CustomDev() {
                     </h2>
                     <div className="border-l-4 border-primary pl-6 inline-block">
                         <p className="text-xl font-semibold text-white/90 text-left">
-                            Nuestro trabajo no empieza con una pantalla en blanco, sino con una comprensión profunda de cada proyecto.
+                            <ScrambleText text="Nuestro trabajo no empieza con una pantalla en blanco, sino con una comprensión profunda de cada proyecto." />
                             <br className="hidden md:block" />
-                            Creemos en el diseño web con propósito: sitios que no solo se ven bien, sino que cumplen un objetivo real.
+                            <ScrambleText text="Creemos en el diseño web con propósito: sitios que no solo se ven bien, sino que cumplen un objetivo real." />
                         </p>
                     </div>
                 </motion.div>
@@ -67,7 +123,7 @@ export function CustomDev() {
 
             {/* Main Layout (3 Columns) */}
             <div className="container mx-auto px-4 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-[0.6fr_1.2fr_1.2fr] gap-12 lg:gap-8 items-stretch min-h-[600px]">
+                <div className="grid grid-cols-1 lg:grid-cols-[0.6fr_2.4fr] gap-12 lg:gap-8 items-stretch min-h-[500px]">
 
                     {/* Left Column: Navigation */}
                     <div className="relative order-1 lg:order-1 flex lg:flex-col justify-center gap-4 lg:gap-0 lg:border-r border-white/20 lg:pr-12 lg:text-right z-20">
@@ -92,81 +148,54 @@ export function CustomDev() {
                         ))}
                     </div>
 
-                    {/* Dynamic Content Area (Cols 2 & 3) */}
+                    {/* Dynamic Content Area */}
                     <AnimatePresence mode="wait">
                         {!activeStep ? (
-                            /* Cover Image State */
+                            /* Cover Text State */
                             <motion.div
                                 key="cover"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.5 }}
-                                className="order-2 lg:order-2 lg:col-span-2 relative h-full min-h-[500px] overflow-hidden rounded-sm group"
+                                className="order-2 lg:order-2 flex items-center relative h-full min-h-[400px] overflow-hidden rounded-sm group bg-neutral-900 border border-white/10 p-8 md:p-12"
                             >
-                                {/* Active Large Cover Image */}
-                                <div className="absolute inset-0 bg-neutral-900">
-                                    <img
-                                        src="/images/procesos-cover-new.png"
-                                        alt="Proceso y Enfoque"
-                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity duration-1000 scale-105 group-hover:scale-100"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
-                                    <div className="absolute bottom-12 left-12 max-w-lg pointer-events-none">
-                                        <h3 className="text-5xl text-white font-black uppercase tracking-tighter mb-4 cursor-pointer hover:scale-105 transition-transform duration-300 group/title">
-                                            Tu visión, <br />
-                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] group-hover/title:bg-[100%_0%] transition-all duration-500">
-                                                Nuestra estrategia
-                                            </span>
-                                        </h3>
-                                        <p className="text-white/70 text-lg font-light leading-relaxed">
-                                            Explora cada etapa de nuestro proceso creativo y técnico seleccionando los pasos.
-                                        </p>
-                                    </div>
+                                <div className="max-w-xl">
+                                    <h3 className="text-4xl md:text-6xl text-white font-black uppercase tracking-tighter mb-6 leading-none">
+                                        <ScrambleText text="Tu visión," as="div" />
+                                        <ScrambleText text="Nuestra estrategia" as="div" className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-all duration-500 mt-2" />
+                                    </h3>
+                                    <p className="text-white/70 text-lg md:text-xl font-light leading-relaxed">
+                                        <ScrambleText text="Explora cada etapa de nuestro proceso creativo y técnico seleccionando los pasos numéricos en el menú." />
+                                    </p>
                                 </div>
                             </motion.div>
                         ) : (
-                            /* Active Unified State (Content + Image in one block) */
+                            /* Active Text State */
                             <motion.div
                                 key={`unified-${activeStep}`}
                                 initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
                                 animate={{ clipPath: "inset(0 0 0 0%)", opacity: 1 }}
                                 exit={{ clipPath: "inset(0 0 0 100%)", opacity: 0 }}
                                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                                className="order-2 lg:order-2 lg:col-span-2 relative z-10 bg-[#FFFFF0] rounded-sm shadow-xl flex flex-col lg:flex-row overflow-hidden min-h-[500px]"
+                                className="order-2 lg:order-2 relative z-10 bg-[#FFFFF0] rounded-sm shadow-xl flex flex-col overflow-hidden min-h-[400px]"
                             >
-                                {/* Text Section */}
-                                <div className="flex-1 p-8 md:p-12 flex flex-col justify-center relative">
-                                    <span className="text-[8rem] lg:text-[10rem] font-black text-black/5 leading-none absolute -top-8 -right-4 lg:-right-8 select-none z-0">
+                                <div className="flex-1 p-8 md:p-16 flex flex-col justify-center relative">
+                                    <span className="text-[12rem] md:text-[20rem] font-black text-black/5 leading-none absolute -bottom-12 -right-12 select-none z-0">
                                         {activeData?.id}
                                     </span>
-                                    <div className="relative z-10">
-                                        <h3 className="text-3xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-all duration-500 mb-8 w-fit pb-2">
-                                            {activeData?.title}
+                                    <div className="relative z-10 max-w-4xl">
+                                        <h3 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] hover:bg-[100%_0%] transition-all duration-500 mb-8 pb-2">
+                                            <ScrambleText text={activeData?.title || ""} />
                                         </h3>
-                                        <p className="text-lg md:text-xl text-neutral-600 leading-relaxed font-light mb-12">
-                                            {activeData?.description}
+                                        <p className="text-xl md:text-3xl text-neutral-600 leading-relaxed font-light mb-12">
+                                            <ScrambleText text={activeData?.description || ""} />
                                         </p>
 
                                         <div className="pt-8 border-t border-neutral-200">
-                                            <p className="text-sm font-medium text-neutral-400 italic">
-                                                Trabajamos cada etapa de forma consciente y colaborativa.
+                                            <p className="text-base md:text-lg font-medium text-neutral-400 italic">
+                                                <ScrambleText text="Trabajamos cada etapa de forma consciente y colaborativa." />
                                             </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Image Section */}
-                                <div className="flex-1 relative min-h-[300px] lg:min-h-full bg-[#FFFFF0] border-l border-neutral-100">
-                                    <div className="absolute inset-2 overflow-hidden rounded-sm">
-                                        {/* Unified Image Display */}
-                                        <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFF0]">
-                                            <img
-                                                src={activeData?.image}
-                                                alt={activeData?.title}
-                                                className="w-full h-full object-contain p-4"
-                                            />
-                                            {/* Removed text overlay as the images are self-explanatory neon icons now */}
                                         </div>
                                     </div>
                                 </div>

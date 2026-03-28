@@ -1,9 +1,71 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useRef, useEffect } from "react"
+import { motion, useInView } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!<>-_\\/[]{}—=+*^?#_"
+
+function ScrambleText({ text, duration = 1, className = "", as: Component = "span" }: { text: string, duration?: number, className?: string, as?: any }) {
+    const containerRef = useRef<HTMLElement>(null)
+    const isInView = useInView(containerRef, { once: true, amount: 0.5 }) // Trigger when 50% visible
+
+    useEffect(() => {
+        const container = containerRef.current
+        if (!container || !isInView) return
+
+        // Create spans safely with original text first
+        container.innerHTML = ""
+        const spans: HTMLSpanElement[] = []
+        
+        text.split("").forEach(ch => {
+            if (ch === " " || ch === "\n") {
+                 container.appendChild(document.createTextNode(ch))
+            } else {
+                 const span = document.createElement("span")
+                 span.className = "inline-block will-change-transform text-center"
+                 span.textContent = ch 
+                 span.setAttribute("data-char", ch)
+                 container.appendChild(span)
+                 spans.push(span)
+            }
+        })
+
+        // Esperamos 1 frame
+        requestAnimationFrame(() => {
+            // Fijamos ancho
+            spans.forEach(span => {
+                 const width = span.getBoundingClientRect().width
+                 if (width > 0) {
+                     span.style.width = `${width}px`
+                 }
+            })
+
+            // Scramble
+            spans.forEach((el) => {
+                const originalText = el.getAttribute("data-char") || ""
+                let iterations = 0
+                // Calculate iterations based on desired duration (40ms per tick)
+                const baseIterations = (duration * 1000) / 40
+                const maxIterations = baseIterations + (Math.random() * (baseIterations * 0.5))
+                
+                const interval = setInterval(() => {
+                    el.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+                    iterations++
+                    
+                    if (iterations >= maxIterations) {
+                        clearInterval(interval)
+                        el.textContent = originalText
+                        el.style.width = "auto"
+                    }
+                }, 40) 
+            })
+        })
+    }, [text, isInView, duration])
+
+    return <Component ref={containerRef} className={className} />
+}
 
 export function VisualContent() {
     return (
@@ -21,7 +83,7 @@ export function VisualContent() {
                     </h2>
                     <div className="border-l-4 border-accent pl-6 inline-block">
                         <p className="text-xl font-semibold text-white/90 text-left">
-                            Cada proyecto está diseñado con un objetivo claro: comunicar mejor, generar confianza y convertir visitas en clientes.
+                            <ScrambleText duration={0.5} text="Cada proyecto está diseñado con un objetivo claro: comunicar mejor, generar confianza y convertir visitas en clientes." />
                         </p>
                     </div>
                 </motion.div>
