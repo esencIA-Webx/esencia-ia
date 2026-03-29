@@ -1,19 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+
 
 export function BackgroundMedia() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   return (
     <>
       {/* Global Film Grain Overlay - Optimized with small repeating tile */}
@@ -24,30 +13,7 @@ export function BackgroundMedia() {
           backgroundSize: '200px 200px'
         }} 
       />
-
-      {/* Global Background Video - Conditional rendering & WebM optimized */}
-      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-black/70 z-10" />
-        {!isMobile && (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="/video-poster.png"
-            className="w-full h-full object-cover opacity-60"
-          >
-            <source src="/background-video-v2.webm" type="video/webm" />
-          </video>
-        )}
-        {/* Fallback image for mobile */}
-        {isMobile && (
-          <div 
-            className="w-full h-full bg-cover bg-center opacity-40 bg-no-repeat"
-            style={{ backgroundImage: 'url(/video-poster.png)' }}
-          />
-        )}
-      </div>
+      <div className="fixed inset-0 z-[-1] bg-black/70 pointer-events-none" />
     </>
   );
 }

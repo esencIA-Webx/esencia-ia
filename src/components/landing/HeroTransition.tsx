@@ -83,7 +83,7 @@ export function HeroTransition() {
     // Efecto que desliza con extrema suavidad de un punto a otro cada vez que cambias de "slide"
     useEffect(() => {
         animate(smoothProgress, MILESTONES[currentStep], {
-            duration: 0.6,
+            duration: 0.4,
             ease: "easeInOut"
         });
     }, [currentStep, smoothProgress]);
@@ -136,7 +136,7 @@ export function HeroTransition() {
                 if (currentStep < TOTAL_STEPS) {
                     isAnimatingRef.current = true;
                     setCurrentStep(prev => prev + 1);
-                    setTimeout(() => { isAnimatingRef.current = false }, 500); // Rápida respuesta para máxima fluidez
+                    setTimeout(() => { isAnimatingRef.current = false }, 350); // Rápida respuesta para máxima fluidez
                 }
             } else {
                 if (currentStep > 0) {
@@ -150,7 +150,7 @@ export function HeroTransition() {
                     if ((window as any).lenis) (window as any).lenis.stop();
                     if (unlockTimeoutRef.current) clearTimeout(unlockTimeoutRef.current);
                     
-                    setTimeout(() => { isAnimatingRef.current = false }, 500); 
+                    setTimeout(() => { isAnimatingRef.current = false }, 350); 
                 }
             }
         };
@@ -178,7 +178,7 @@ export function HeroTransition() {
             const touchEndY = e.touches[0].clientY;
             const deltaY = touchStartY - touchEndY;
 
-            if (Math.abs(deltaY) < 40) return; // Ignora movimientos cortitos
+            if (Math.abs(deltaY) < 20) return; // Ignora movimientos cortitos
 
             const scrollingDown = deltaY > 0;
 
@@ -186,7 +186,7 @@ export function HeroTransition() {
                 if (currentStep < TOTAL_STEPS) {
                     isAnimatingRef.current = true;
                     setCurrentStep(prev => prev + 1);
-                    setTimeout(() => { isAnimatingRef.current = false }, 500);
+                    setTimeout(() => { isAnimatingRef.current = false }, 350);
                     touchStartY = touchEndY; 
                 }
             } else {
@@ -200,7 +200,7 @@ export function HeroTransition() {
                     if ((window as any).lenis) (window as any).lenis.stop();
                     if (unlockTimeoutRef.current) clearTimeout(unlockTimeoutRef.current);
                     
-                    setTimeout(() => { isAnimatingRef.current = false }, 500);
+                    setTimeout(() => { isAnimatingRef.current = false }, 350);
                     touchStartY = touchEndY; 
                 }
             }
