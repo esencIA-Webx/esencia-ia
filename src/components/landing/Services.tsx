@@ -147,28 +147,53 @@ export function Services() {
 
     return (
         <>
-            {/* The pinned Stack Section USING CSS STICKY (h-[400vh] provides the scroll track length) */}
-            <section ref={sectionRef} id="services" className="relative w-full h-[400vh] bg-black">
+        <section ref={sectionRef} id="services" className="relative w-full h-[400vh] bg-[#0A0A0A]">
+            
+            {/* Visual Viewport locked natively */}
+            <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0A]">
                 
-                {/* Visual Viewport locked natively */}
-                <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden">
-                    <div className="flex flex-col items-center justify-center gap-6 sm:gap-10 perspective-1000 z-10 w-full px-4">
-                        {servicesData.map((svc) => (
-                            <button
-                                key={svc.id}
-                                onClick={() => setActiveServiceId(svc.id)}
-                                className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center"
-                            >
-                                <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary leading-none select-none text-center">
-                                    {svc.title}
-                                </h2>
-                                {/* Hover glow effect behind */}
-                                <div className="absolute inset-0 bg-accent/20 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full pointer-events-none" />
-                            </button>
-                        ))}
-                    </div>
+                {/* Awwwards Abstract Dark Grey Architectural Background */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    {/* Subtle Crosshair Grid */}
+                    <div className="absolute inset-0 opacity-[0.15]" 
+                         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23666666' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} 
+                    />
+                    
+                    {/* Volumetric Fog / Shifting Spotlights */}
+                    <motion.div
+                        animate={{ x: ["-5%", "5%", "-5%"], y: ["0%", "10%", "0%"] }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute -top-1/4 -left-1/4 w-[75vw] h-[75vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.25]"
+                        style={{ background: "radial-gradient(circle, #595959 0%, transparent 70%)" }}
+                    />
+                    <motion.div
+                        animate={{ x: ["5%", "-5%", "5%"], y: ["10%", "0%", "10%"] }}
+                        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute -bottom-1/4 -right-1/4 w-[80vw] h-[80vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.20]"
+                        style={{ background: "radial-gradient(circle, #404040 0%, transparent 70%)" }}
+                    />
+                    
+                    {/* Global Dark Vignette Overlay for Center Focus */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0A0A0A_85%)] z-10" />
                 </div>
-            </section>
+
+                <div className="flex flex-col items-center justify-center gap-6 sm:gap-10 perspective-1000 z-20 w-full px-4 relative">
+                    {servicesData.map((svc) => (
+                        <button
+                            key={svc.id}
+                            onClick={() => setActiveServiceId(svc.id)}
+                            className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center"
+                        >
+                            <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[rgba(255,255,255,0.9)] via-[rgba(200,200,200,0.8)] to-[rgba(150,150,150,0.6)] group-hover:from-primary group-hover:via-accent group-hover:to-secondary transition-all duration-500 leading-none select-none text-center drop-shadow-2xl">
+                                {svc.title}
+                            </h2>
+                            {/* Glow accent */}
+                            <div className="absolute inset-0 bg-accent/20 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full pointer-events-none z-[-1]" />
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </section>
 
             {/* The Fullscreen Curtain Reveal Overlay */}
             <AnimatePresence>
