@@ -289,14 +289,53 @@ export function HeroTransition() {
     const aboutOpacity = useTransform(smoothProgress, [0.80, 0.95], [0, 1])
     const aboutY = useTransform(smoothProgress, [0.80, 0.95], [40, 0])
 
-    return (
-        <div ref={containerRef} className="relative h-screen bg-black">
-            <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col pt-4 md:pt-8 px-6 md:px-12 lg:px-20 pb-8">
+    // 8. BACKGROUND TYPOGRAPHY
+    const bgTextX1 = useTransform(smoothProgress, [0, 1], ["0%", "-15%"])
+    const bgTextX2 = useTransform(smoothProgress, [0, 1], ["-15%", "0%"])
 
-                {/* Subtle Grain/Noise Backdrop */}
-                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.15]">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent blur-3xl" />
+    return (
+        <div ref={containerRef} className="relative h-screen bg-[#0a0a0a]">
+            <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col pt-8 md:pt-16 px-6 md:px-12 lg:px-20 pb-8">
+
+                {/* Background Typography */}
+                <div className="absolute flex flex-col justify-center inset-0 gap-4 opacity-[0.03] pointer-events-none select-none z-0 overflow-hidden">
+                    <motion.div 
+                        animate={{ x: ["2%", "-2%", "2%"] }} 
+                        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                        className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter"
+                    >
+                        DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB
+                    </motion.div>
+                    <motion.div 
+                        animate={{ x: ["-2%", "2%", "-2%"] }} 
+                        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                        style={{ WebkitTextStroke: "2px rgba(255,255,255,1)" }} 
+                        className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent"
+                    >
+                        EXPERIENCIA DIGITAL EXPERIENCIA DIGITAL EXPERIENCIA DIGITAL
+                    </motion.div>
+                    <motion.div 
+                        animate={{ x: ["1%", "-3%", "1%"] }} 
+                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                        className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter"
+                    >
+                        ESTRATEGIA DIGITAL ESTRATEGIA DIGITAL ESTRATEGIA DIGITAL
+                    </motion.div>
                 </div>
+
+                {/* Noise Grain Overlay */}
+                <div 
+                    className="absolute inset-0 z-0 pointer-events-none opacity-[0.05] mix-blend-screen" 
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+                />
+
+                {/* Subtle Gradient Atmosphere */}
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2] mix-blend-screen">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent blur-3xl" />
+                </div>
+                
+                {/* Bottom Fade Transition */}
+                <div className="absolute bottom-0 left-0 right-0 h-48 md:h-64 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent z-20 pointer-events-none" />
 
                 <motion.div
                     style={{
@@ -304,7 +343,7 @@ export function HeroTransition() {
                         y: logoY,
                         scale: logoScale,
                     }}
-                    className="absolute top-4 right-6 md:top-8 md:right-12 lg:right-20 z-50 w-24 h-24 md:w-32 md:h-32 pointer-events-none origin-top"
+                    className="absolute top-12 right-6 md:top-24 md:right-12 lg:right-20 z-50 w-24 h-24 md:w-32 md:h-32 pointer-events-none origin-top"
                 >
                     <NextImage
                         src="/logo.png"
@@ -316,7 +355,7 @@ export function HeroTransition() {
                 </motion.div>
 
                 {/* Main Fully-Balanced Content Container */}
-                <div className="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col justify-between mt-8 md:mt-16">
+                <div className="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col justify-between mt-20 md:mt-32">
 
                     {/* Typographic Header Block */}
                     <div className="flex flex-col w-full">
@@ -366,8 +405,7 @@ export function HeroTransition() {
                             </div>
                         </div>
 
-                        {/* STACKED SUBTEXT: realizamos diseño web / con propósito */}
-                        {/* Removed overflow-hidden entirely to ensure the absolute words show. Given high z-index. */}
+                        {/* STACKED SUBTEXT */}
                         <div className="flex flex-col w-full pb-8 z-20">
                             <motion.div style={{ opacity: line1Opacity, y: line1Y }} className="w-full">
                                 <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold text-white/90 tracking-tight leading-tight md:leading-none">
@@ -394,31 +432,6 @@ export function HeroTransition() {
                             </motion.div>
                         </div>
                     </div>
-
-                    {/* RESTORED ABOUT SECTION GRID */}
-                    <motion.div style={{ opacity: aboutOpacity, y: aboutY }} className="w-full grid md:grid-cols-2 gap-6 md:gap-16 items-center mt-2 md:mt-8 z-10">
-                        {/* Paragraph */}
-                        <div className="space-y-3 md:space-y-6 max-w-lg">
-                            <p className="border-l-4 border-primary pl-4 md:pl-6 text-base md:text-xl font-semibold text-white/90 leading-tight md:leading-snug">
-                                Nuestro enfoque combina estrategia y diseño consciente.
-                            </p>
-                            <p className="text-sm md:text-lg text-white/60 leading-relaxed hidden sm:block">
-                                Creamos sitios pensados para cumplir un objetivo concreto: comunicar con claridad, generar confianza y acompañar el crecimiento de cada proyecto. Una presencia digital que refleja la verdadera esencia de tu marca.
-                            </p>
-                        </div>
-
-                        {/* Image */}
-                        <div className="relative h-28 sm:h-40 md:h-[280px] w-full border border-white/10 overflow-hidden shadow-2xl rounded-sm">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent z-10" />
-                            <NextImage
-                                src="/images/about-main-new.png"
-                                alt="Diseño con propósito"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                    </motion.div>
-
                 </div>
             </div>
         </div>
