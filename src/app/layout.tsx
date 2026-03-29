@@ -3,6 +3,7 @@ import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { BackgroundMedia } from "@/components/layout/BackgroundMedia";
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -10,8 +11,6 @@ const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   display: "swap",
 });
-
-
 
 export const metadata: Metadata = {
   title: "Esencia IA | Diseño Web Estratégico",
@@ -54,27 +53,7 @@ export default function RootLayout({
       >
         <SmoothScroll>
           <CustomCursor />
-          
-          {/* Global Film Grain Overlay */}
-          <div 
-            className="fixed inset-0 z-[9999] pointer-events-none opacity-[0.06] mix-blend-overlay" 
-            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilterGlobal'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilterGlobal)'/%3E%3C/svg%3E")` }} 
-          />
-
-          {/* Global Background Video */}
-          <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-            <div className="absolute inset-0 bg-black/70 z-10" /> {/* Dark Overlay for readability */}
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              poster="/video-poster.png"
-              className="w-full h-full object-cover opacity-60"
-            >
-              <source src="/background-video-v2.mp4" type="video/mp4" />
-            </video>
-          </div>
+          <BackgroundMedia />
           {children}
         </SmoothScroll>
       </body>

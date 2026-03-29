@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { MessageSquare } from "lucide-react"
 import Link from "next/link"
 
-export function FixedContactButton() {
+export default function FixedContactButton() {
     const [isVisible, setIsVisible] = useState(false)
 
     useEffect(() => {

@@ -82,7 +82,7 @@ const servicesData = [
     },
 ]
 
-export function Services() {
+export default function Services() {
     const sectionRef = useRef<HTMLDivElement>(null)
     const [activeServiceId, setActiveServiceId] = useState<string | null>(null)
 
@@ -182,7 +182,7 @@ export function Services() {
                         <button
                             key={svc.id}
                             onClick={() => setActiveServiceId(svc.id)}
-                            className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center"
+                            className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center will-change-transform"
                         >
                             <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[rgba(255,255,255,0.9)] via-[rgba(200,200,200,0.8)] to-[rgba(150,150,150,0.6)] group-hover:from-primary group-hover:via-accent group-hover:to-secondary transition-all duration-500 leading-none select-none text-center drop-shadow-2xl">
                                 {svc.title}

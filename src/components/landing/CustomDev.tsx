@@ -40,7 +40,6 @@ function ScrambleText({ text, className = "", as: Component = "span" }: { text: 
         const container = containerRef.current
         if (!container) return
 
-        // Create spans safely with original text first
         container.innerHTML = ""
         const spans: HTMLSpanElement[] = []
         
@@ -49,50 +48,56 @@ function ScrambleText({ text, className = "", as: Component = "span" }: { text: 
                  container.appendChild(document.createTextNode(ch))
             } else {
                  const span = document.createElement("span")
-                 // Usamos inline-block para poder fijar el ancho luego
                  span.className = "inline-block will-change-transform text-center"
-                 span.textContent = ch // Seteamos el texto original para que el DOM calcule su espacio real
+                 span.textContent = ch 
                  span.setAttribute("data-char", ch)
                  container.appendChild(span)
                  spans.push(span)
             }
         })
 
-        // Esperamos 1 frame para que el navegador renderice y calcule los anchos reales
         requestAnimationFrame(() => {
-            // Fijamos matemáticamente el ancho de cada letra al pixel exacto
             spans.forEach(span => {
-                 const width = span.getBoundingClientRect().width
-                 if (width > 0) {
-                     span.style.width = `${width}px`
+                 const rect = span.getBoundingClientRect()
+                 if (rect.width > 0) {
+                     span.style.width = `${rect.width}px`
                  }
             })
 
-            // Comenzamos el scramble
-            spans.forEach((el) => {
-                const originalText = el.getAttribute("data-char") || ""
-                let iterations = 0
-                const maxIterations = 10 + Math.random() * 20 
-                
-                const interval = setInterval(() => {
-                    el.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-                    iterations++
-                    
-                    if (iterations >= maxIterations) {
-                        clearInterval(interval)
-                        el.textContent = originalText
-                        // Limpiamos el ancho fijo al terminar por si el usuario redimensiona la ventana
-                        el.style.width = "auto"
-                    }
-                }, 40) 
-            })
+            const startTime = performance.now()
+            const frameInterval = 66; 
+            const totalDuration = 800; // default duration for CustomDev
+            let lastUpdate = 0;
+
+            const update = (currentTime: number) => {
+                const elapsed = currentTime - startTime
+
+                if (elapsed >= totalDuration) {
+                    spans.forEach(span => {
+                        span.textContent = span.getAttribute("data-char")
+                        span.style.width = "auto"
+                    })
+                    return
+                }
+
+                if (currentTime - lastUpdate >= frameInterval) {
+                    lastUpdate = currentTime
+                    spans.forEach(span => {
+                        span.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+                    })
+                }
+
+                requestAnimationFrame(update)
+            }
+
+            requestAnimationFrame(update)
         })
     }, [text])
 
     return <Component ref={containerRef} className={className} />
 }
 
-export function CustomDev() {
+export default function CustomDev() {
     const [activeStep, setActiveStep] = useState<number | null>(null)
 
     // Find active data safely

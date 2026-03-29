@@ -67,11 +67,18 @@ export function HeroTransition() {
             setLogoOffset({ x: logoMoveX, y: logoMoveY });
         }
 
-        checkLayout()
-        window.addEventListener('resize', checkLayout)
-        setTimeout(checkLayout, 100)
-        return () => window.removeEventListener('resize', checkLayout)
-    }, [])
+            checkLayout()
+            
+            let resizeTimer: NodeJS.Timeout;
+            const handleResize = () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(checkLayout, 100);
+            };
+
+            window.addEventListener('resize', handleResize)
+            setTimeout(checkLayout, 100)
+            return () => window.removeEventListener('resize', handleResize)
+        }, [])
 
     // Efecto que desliza con extrema suavidad de un punto a otro cada vez que cambias de "slide"
     useEffect(() => {
@@ -343,7 +350,7 @@ export function HeroTransition() {
                         y: logoY,
                         scale: logoScale,
                     }}
-                    className="absolute top-12 right-6 md:top-24 md:right-12 lg:right-20 z-50 w-24 h-24 md:w-32 md:h-32 pointer-events-none origin-top"
+                    className="absolute top-12 right-6 md:top-24 md:right-12 lg:right-20 z-50 w-24 h-24 md:w-32 md:h-32 pointer-events-none origin-top will-change-transform"
                 >
                     <NextImage
                         src="/logo.png"
@@ -380,7 +387,7 @@ export function HeroTransition() {
                                         y: esenciaY,
                                         scale: esenciaScale,
                                     }}
-                                    className="flex items-end transform-gpu origin-center"
+                                    className="flex items-end transform-gpu origin-center will-change-transform"
                                 >
                                     <h1 className="text-[3rem] sm:text-[5rem] md:text-[8rem] lg:text-[10rem] xl:text-[10.5rem] font-black tracking-tighter leading-none whitespace-nowrap">
                                         <span className="text-white">ESENC</span>

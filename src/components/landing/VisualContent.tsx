@@ -9,13 +9,12 @@ const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!<>-_\\/[]{}—=+*^?#_"
 
 function ScrambleText({ text, duration = 1, className = "", as: Component = "span" }: { text: string, duration?: number, className?: string, as?: any }) {
     const containerRef = useRef<HTMLElement>(null)
-    const isInView = useInView(containerRef, { once: true, amount: 0.5 }) // Trigger when 50% visible
+    const isInView = useInView(containerRef, { once: true, amount: 0.5 })
 
     useEffect(() => {
         const container = containerRef.current
         if (!container || !isInView) return
 
-        // Create spans safely with original text first
         container.innerHTML = ""
         const spans: HTMLSpanElement[] = []
         
@@ -32,42 +31,48 @@ function ScrambleText({ text, duration = 1, className = "", as: Component = "spa
             }
         })
 
-        // Esperamos 1 frame
         requestAnimationFrame(() => {
-            // Fijamos ancho
             spans.forEach(span => {
-                 const width = span.getBoundingClientRect().width
-                 if (width > 0) {
-                     span.style.width = `${width}px`
+                 const rect = span.getBoundingClientRect()
+                 if (rect.width > 0) {
+                     span.style.width = `${rect.width}px`
                  }
             })
 
-            // Scramble
-            spans.forEach((el) => {
-                const originalText = el.getAttribute("data-char") || ""
-                let iterations = 0
-                // Calculate iterations based on desired duration (40ms per tick)
-                const baseIterations = (duration * 1000) / 40
-                const maxIterations = baseIterations + (Math.random() * (baseIterations * 0.5))
-                
-                const interval = setInterval(() => {
-                    el.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-                    iterations++
-                    
-                    if (iterations >= maxIterations) {
-                        clearInterval(interval)
-                        el.textContent = originalText
-                        el.style.width = "auto"
-                    }
-                }, 40) 
-            })
+            const startTime = performance.now()
+            const frameInterval = 66; // ~15 FPS is enough for the scramble effect
+            let lastUpdate = 0;
+
+            const update = (currentTime: number) => {
+                const elapsed = currentTime - startTime
+                const totalDuration = duration * 1000
+
+                if (elapsed >= totalDuration) {
+                    spans.forEach(span => {
+                        span.textContent = span.getAttribute("data-char")
+                        span.style.width = "auto"
+                    })
+                    return
+                }
+
+                if (currentTime - lastUpdate >= frameInterval) {
+                    lastUpdate = currentTime
+                    spans.forEach(span => {
+                        span.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+                    })
+                }
+
+                requestAnimationFrame(update)
+            }
+
+            requestAnimationFrame(update)
         })
     }, [text, isInView, duration])
 
     return <Component ref={containerRef} className={className} />
 }
 
-export function VisualContent() {
+export default function VisualContent() {
     return (
         <section id="visual-content" className="py-24 scroll-snap-start">
             <div className="container mx-auto px-4 space-y-16">

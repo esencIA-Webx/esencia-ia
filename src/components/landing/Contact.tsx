@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { useState } from "react"
 import { sendContactEmail, type ContactFormData } from "@/app/actions/contact"
 
-export function Contact() {
+export default function Contact() {
     const [formData, setFormData] = useState<ContactFormData>({
         name: "",
         email: "",
