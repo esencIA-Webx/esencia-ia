@@ -41,10 +41,10 @@ export function AboutAwwwards() {
     return (
         <section 
             ref={containerRef} 
-            className="relative h-[200vh] sm:h-[180vh] w-full bg-[#f2f2ef] text-black"
+            className="relative h-[200vh] sm:h-[180vh] w-full text-black"
         >
             {/* Contenedor Sticky para simular "Bloqueo/Pinning" */}
-            <div className="sticky top-0 w-full h-screen flex flex-col lg:flex-row overflow-hidden relative z-10">
+            <div className="sticky top-0 w-full h-screen flex flex-col lg:flex-row overflow-hidden relative z-10 bg-[#f2f2ef]">
                 
                 {/* Ruido SVG Estilo Editorial Global */}
                 <div 
@@ -69,15 +69,15 @@ export function AboutAwwwards() {
                 </motion.div>
 
                 {/* Mitad Izquierda: Texto */}
-                <div className="w-full lg:w-1/2 h-[50vh] lg:h-full flex items-end justify-start pb-16 lg:pb-32 px-6 sm:px-12 lg:px-16 xl:px-[5rem] order-2 lg:order-1 relative z-20">
-                    <div className="flex flex-col space-y-10 max-w-4xl lg:-mr-32 relative z-20">
+                <div className="w-full lg:w-1/2 h-[50vh] lg:h-full flex items-end justify-start pb-16 lg:pb-32 px-6 sm:px-12 lg:px-16 xl:px-[5rem] order-2 lg:order-1 relative h-full">
+                    <div className="flex flex-col space-y-10 max-w-4xl lg:-mr-32 relative">
                         
                         {/* Animated Staggered Title - Linked to Scroll */}
                         <div className="flex flex-col">
                             <div className="overflow-hidden pb-1">
                                 <motion.h2 
                                     style={{ y: titleY1, rotate: 0 }}
-                                    className="text-[3.5rem] md:text-7xl lg:text-[6rem] xl:text-[7.5rem] 2xl:text-[8.5rem] font-bold tracking-tighter text-neutral-900 leading-[0.80]"
+                                    className="text-[3.5rem] md:text-7xl lg:text-[6rem] xl:text-[7.5rem] 2xl:text-[8.5rem] font-bold tracking-tighter text-white mix-blend-difference leading-[0.80]"
                                 >
                                     Destacar
                                 </motion.h2>
@@ -85,7 +85,7 @@ export function AboutAwwwards() {
                             <div className="overflow-hidden pb-1">
                                 <motion.h2 
                                     style={{ y: titleY2, rotate: 0 }}
-                                    className="text-[3.5rem] md:text-7xl lg:text-[6rem] xl:text-[7.5rem] 2xl:text-[8.5rem] font-bold tracking-tighter text-neutral-900 leading-[0.80]"
+                                    className="text-[3.5rem] md:text-7xl lg:text-[6rem] xl:text-[7.5rem] 2xl:text-[8.5rem] font-bold tracking-tighter text-white mix-blend-difference leading-[0.80]"
                                 >
                                     no es opcional,
                                 </motion.h2>

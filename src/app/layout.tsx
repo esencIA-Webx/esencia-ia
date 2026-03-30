@@ -51,9 +51,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${interTight.variable} antialiased bg-black text-white selection:bg-primary/30`}
       >
+        <CustomCursor />
+        <BackgroundMedia />
         <SmoothScroll>
-          <CustomCursor />
-          <BackgroundMedia />
           {children}
         </SmoothScroll>
       </body>
