@@ -6,9 +6,18 @@ import Link from "next/link"
 import { useRef } from "react"
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
+import gsap from "gsap"
+import { useGSAP } from "@gsap/react"
+
+gsap.registerPlugin(useGSAP)
 
 export function Hero() {
     const ref = useRef(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    // Framer motion hooks para parallax continuo vinculado al scroll 
+    // (GSAP ScrollTrigger scrub es idéntico, pero conservamos framer aquí
+    //  para no rehacer la lógica del background infinito que ya rinde bien).
     const { scrollYProgress } = useScroll({
         target: ref,
         offset: ["start start", "end start"],
@@ -20,6 +29,36 @@ export function Hero() {
 
     const textX1 = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"])
     const textX2 = useTransform(scrollYProgress, [0, 1], ["-25%", "0%"])
+
+    // GSAP Cinematic Entrance Timeline
+    useGSAP(() => {
+        const tl = gsap.timeline({ defaults: { ease: "power4.out" } })
+
+        // Estado inicial
+        gsap.set(".hero-logo", { scale: 0.7, opacity: 0, rotateZ: -5 })
+        gsap.set(".hero-stagger", { yPercent: 120, opacity: 0 })
+        gsap.set(".scroll-indicator", { scaleY: 0, transformOrigin: "top" })
+
+        tl.to(".hero-logo", {
+            scale: 1,
+            opacity: 1,
+            rotateZ: 0,
+            duration: 1.8,
+            ease: "expo.out"
+        })
+        .to(".hero-stagger", {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.2,
+            stagger: 0.12,
+        }, "-=1.2") // Inicia antes de que termine el logo
+        .to(".scroll-indicator", {
+            scaleY: 1,
+            duration: 1.5,
+            ease: "expo.inOut"
+        }, "-=0.5")
+
+    }, { scope: containerRef })
 
     return (
         <section ref={ref} className="relative flex h-screen items-center justify-center overflow-hidden bg-black">
@@ -51,19 +90,11 @@ export function Hero() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-black/60 to-black blur-3xl z-0 pointer-events-none mix-blend-overlay" />
             </motion.div>
 
-            <div className="container relative z-10 mx-auto px-4 text-center">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="mb-8 flex flex-col items-center justify-center"
-                >
+            <div ref={containerRef} className="container relative z-10 mx-auto px-4 text-center">
+                <div className="mb-8 flex flex-col items-center justify-center">
                     <motion.div
                         style={{ y: logoY }}
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2, duration: 0.8 }}
-                        className="mb-8 relative w-32 h-32 md:w-40 md:h-40"
+                        className="hero-logo mb-8 relative w-32 h-32 md:w-40 md:h-40"
                     >
                         <Image
                             src="/logo.png"
@@ -74,51 +105,45 @@ export function Hero() {
                         />
                     </motion.div>
 
-                    <h1 className="text-5xl font-black tracking-widest sm:text-8xl md:text-9xl mb-4">
-                        ESENC<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] md:hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">IA</span>
-                    </h1>
-                    <h2 className="text-lg sm:text-3xl md:text-4xl font-semibold text-white/80 tracking-widest uppercase">
-                        Diseño & Estrategia Digital
-                    </h2>
-                </motion.div>
+                    <div className="overflow-hidden mb-4 p-2">
+                        <h1 className="hero-stagger text-5xl font-black tracking-widest sm:text-8xl md:text-9xl relative inline-block">
+                            ESENC<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] bg-[0%_0%] md:hover:bg-[100%_0%] transition-[background-position] duration-500 cursor-default">IA</span>
+                        </h1>
+                    </div>
 
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground sm:text-xl font-light leading-relaxed"
-                >
-                    Presencia digital profesional para marcas, instituciones y emprendedores.
-                    <br />
-                    <span className="text-white font-medium tracking-wide block mt-2">
-                        Creamos sitios web claros, modernos y orientados a resultados.
-                    </span>
-                </motion.p>
+                    <div className="overflow-hidden">
+                        <h2 className="hero-stagger text-lg sm:text-3xl md:text-4xl font-semibold text-white/80 tracking-widest uppercase">
+                            Diseño & Estrategia Digital
+                        </h2>
+                    </div>
+                </div>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.8 }}
-                    className="flex flex-col items-center justify-center gap-6 sm:flex-row"
-                >
-                    <Link href="#contact">
-                        <Button variant="outline" size="lg" className="h-14 min-w-[200px] rounded-md text-lg bg-white/5 border-white/10 hover:bg-white/10 text-white cursor-hover">
-                            Consultar proyecto
-                            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                    </Link>
-                </motion.div>
+                <div className="overflow-hidden flex justify-center mb-12">
+                    <p className="hero-stagger mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl font-light leading-relaxed">
+                        Presencia digital profesional para marcas, instituciones y emprendedores.
+                        <br />
+                        <span className="text-white font-medium tracking-wide block mt-2">
+                            Creamos sitios web claros, modernos y orientados a resultados.
+                        </span>
+                    </p>
+                </div>
+
+                <div className="overflow-hidden flex flex-col items-center justify-center gap-6 sm:flex-row">
+                    <div className="hero-stagger">
+                        <Link href="#contact" data-magnetic="true">
+                            <Button variant="outline" size="lg" className="h-14 min-w-[200px] rounded-md text-lg bg-white/5 border-white/10 hover:bg-white/10 text-white cursor-hover">
+                                Consultar proyecto
+                                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
             </div>
 
             {/* Scroll Indicator */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2"
-            >
-                <div className="h-16 w-[1px] bg-gradient-to-b from-transparent via-white/50 to-transparent" />
-            </motion.div>
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 overflow-hidden h-16 w-[1px]">
+                <div className="scroll-indicator h-full w-full bg-gradient-to-b from-transparent via-white/50 to-transparent" />
+            </div>
         </section>
     )
 }
