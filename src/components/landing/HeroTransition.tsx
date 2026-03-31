@@ -395,7 +395,7 @@ export function HeroTransition() {
                                             {/* The foreground text that fades to transparent to show its own background gradient clip */}
                                             <motion.span
                                                 style={{ color: iaColor }}
-                                                className="relative z-10 transition-colors duration-300 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text"
+                                                className="relative z-10 transition-all duration-500 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text bg-[length:200%_auto] hover:bg-right cursor-default"
                                             >
                                                 IA
                                             </motion.span>
@@ -430,10 +430,10 @@ export function HeroTransition() {
                                         {/* Invisible placeholder for scale */}
                                         <span className="opacity-0 pointer-events-none">comunicación</span>
 
-                                        <motion.span style={{ opacity: w1Opacity, y: w1Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">propósito</motion.span>
-                                        <motion.span style={{ opacity: w2Opacity, y: w2Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">comunicación</motion.span>
-                                        <motion.span style={{ opacity: w3Opacity, y: w3Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">conversión</motion.span>
-                                        <motion.span style={{ opacity: w4Opacity, y: w4Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">identidad</motion.span>
+                                        <motion.span style={{ opacity: w1Opacity, y: w1Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">propósito</motion.span>
+                                        <motion.span style={{ opacity: w2Opacity, y: w2Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">comunicación</motion.span>
+                                        <motion.span style={{ opacity: w3Opacity, y: w3Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">conversión</motion.span>
+                                        <motion.span style={{ opacity: w4Opacity, y: w4Y }} className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default">identidad</motion.span>
                                     </span>
                                 </h2>
                             </motion.div>

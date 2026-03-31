@@ -91,20 +91,17 @@ export default function Services() {
         const titles = gsap.utils.toArray<HTMLElement>(".service-btn")
         if (titles.length === 0 || !sectionRef.current) return
 
-        // Create a Timeline tied to the scroll of this section natively
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: sectionRef.current,
                 start: "top top",
-                end: "bottom bottom", // Anima durante todo el trayecto de los 300vh
-                scrub: 1, // Smooth scrub
+                end: "bottom bottom",
+                scrub: 1,
             }
         })
 
-        // Initial invisible pushed-down state
         gsap.set(titles, { y: 150, opacity: 0, scale: 0.9 })
 
-        // Sequentially rise the titles as we scroll
         titles.forEach((title, i) => {
             tl.to(title, {
                 y: 0,
@@ -112,31 +109,29 @@ export default function Services() {
                 scale: 1,
                 ease: "power2.out",
                 duration: 1
-            }, i * 0.8) // Stagger start time slightly wider
+            }, i * 0.8)
         })
 
-        // Añadimos un espacio de tiempo inactivo al final de la línea de tiempo.
-        // Esto crea un "buffer" donde el usuario sigue haciendo scroll pero no pasa nada,
-        // dándole tiempo para apreciar el menú terminado antes de que se despegue.
         tl.to({}, { duration: 1 })
 
     }, { scope: sectionRef })
 
-    // Body lock when curtain is open
+    // Lock scroll when curtain is open — compatible with Lenis
     useEffect(() => {
+        const htmlEl = document.documentElement
         if (activeServiceId) {
-            document.body.style.overflow = "hidden"
+            htmlEl.style.overflow = "hidden"
             if (typeof window !== "undefined" && (window as any).lenis) {
                 (window as any).lenis.stop()
             }
         } else {
-            document.body.style.overflow = ""
+            htmlEl.style.overflow = ""
             if (typeof window !== "undefined" && (window as any).lenis) {
                 (window as any).lenis.start()
             }
         }
         return () => {
-            document.body.style.overflow = ""
+            htmlEl.style.overflow = ""
             if (typeof window !== "undefined" && (window as any).lenis) {
                 (window as any).lenis.start()
             }
@@ -147,134 +142,157 @@ export default function Services() {
 
     return (
         <>
-        <section ref={sectionRef} id="services" className="relative w-full h-[400vh] bg-[#0A0A0A]">
-            
-            {/* Visual Viewport locked natively */}
-            <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0A]">
-                
-                {/* Awwwards Abstract Dark Grey Architectural Background */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    {/* Subtle Crosshair Grid */}
-                    <div className="absolute inset-0 opacity-[0.15]" 
-                         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23666666' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} 
-                    />
-                    
-                    {/* Volumetric Fog / Shifting Spotlights */}
-                    <motion.div
-                        animate={{ x: ["-5%", "5%", "-5%"], y: ["0%", "10%", "0%"] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -top-1/4 -left-1/4 w-[75vw] h-[75vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.25]"
-                        style={{ background: "radial-gradient(circle, #595959 0%, transparent 70%)" }}
-                    />
-                    <motion.div
-                        animate={{ x: ["5%", "-5%", "5%"], y: ["10%", "0%", "10%"] }}
-                        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -bottom-1/4 -right-1/4 w-[80vw] h-[80vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.20]"
-                        style={{ background: "radial-gradient(circle, #404040 0%, transparent 70%)" }}
-                    />
-                    
-                    {/* Global Dark Vignette Overlay for Center Focus */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0A0A0A_85%)] z-10" />
-                </div>
+            <section ref={sectionRef} id="services" className="relative w-full h-[400vh] bg-[#0A0A0A]">
 
-                <div className="flex flex-col items-center justify-center gap-6 sm:gap-10 perspective-1000 z-20 w-full px-4 relative">
-                    {servicesData.map((svc) => (
-                        <button
-                            key={svc.id}
-                            onClick={() => setActiveServiceId(svc.id)}
-                            className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center will-change-transform"
-                        >
-                            <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[rgba(255,255,255,0.9)] via-[rgba(200,200,200,0.8)] to-[rgba(150,150,150,0.6)] group-hover:from-primary group-hover:via-accent group-hover:to-secondary transition-all duration-500 leading-none select-none text-center drop-shadow-2xl">
-                                {svc.title}
-                            </h2>
-                            {/* Glow accent */}
-                            <div className="absolute inset-0 bg-accent/20 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full pointer-events-none z-[-1]" />
-                        </button>
-                    ))}
-                </div>
-            </div>
-        </section>
+                {/* Visual Viewport locked natively */}
+                <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0A]">
 
-            {/* The Fullscreen Curtain Reveal Overlay */}
+                    {/* Background */}
+                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                        <div className="absolute inset-0 opacity-[0.15]"
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23666666' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}
+                        />
+                        <motion.div
+                            animate={{ x: ["-5%", "5%", "-5%"], y: ["0%", "10%", "0%"] }}
+                            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute -top-1/4 -left-1/4 w-[75vw] h-[75vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.25]"
+                            style={{ background: "radial-gradient(circle, #595959 0%, transparent 70%)" }}
+                        />
+                        <motion.div
+                            animate={{ x: ["5%", "-5%", "5%"], y: ["10%", "0%", "10%"] }}
+                            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute -bottom-1/4 -right-1/4 w-[80vw] h-[80vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.20]"
+                            style={{ background: "radial-gradient(circle, #404040 0%, transparent 70%)" }}
+                        />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0A0A0A_85%)] z-10" />
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center gap-6 sm:gap-10 z-20 w-full px-4 relative">
+                        {servicesData.map((svc) => (
+                            <button
+                                key={svc.id}
+                                onClick={() => setActiveServiceId(svc.id)}
+                                className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center will-change-transform"
+                            >
+                                <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[rgba(255,255,255,0.9)] via-[rgba(200,200,200,0.8)] to-[rgba(150,150,150,0.6)] group-hover:from-primary group-hover:via-accent group-hover:to-secondary bg-[length:200%_auto] group-hover:bg-right transition-all duration-500 leading-none select-none text-center drop-shadow-2xl">
+                                    {svc.title}
+                                </h2>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Fullscreen Curtain Modal ── */}
             <AnimatePresence>
                 {activeData && (
                     <motion.div
+                        key={activeData.id}
                         initial={{ y: "100%" }}
                         animate={{ y: "0%" }}
                         exit={{ y: "100%" }}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                        className="fixed inset-0 z-[100] bg-[#FFFFF0] text-black overflow-y-auto overflow-x-hidden flex flex-col"
+                        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            zIndex: 9999,
+                            backgroundColor: "#FFFFF0",
+                            color: "#000",
+                            display: "flex",
+                            flexDirection: "column",
+                        }}
                     >
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setActiveServiceId(null)}
-                            className="fixed top-6 right-6 md:top-10 md:right-10 z-[110] p-3 md:p-4 bg-black/5 hover:bg-black/10 rounded-full transition-transform duration-300 hover:rotate-90 cursor-pointer flex items-center justify-center backdrop-blur-md"
-                        >
-                            <X className="w-6 h-6 md:w-8 md:h-8 text-black" />
-                            <span className="sr-only">Cerrar</span>
-                        </button>
+                        {/* Inner scrollable area — owns its own scroll, independent of Lenis */}
+                        <div style={{ width: "100%", height: "100%", overflowY: "scroll", overflowX: "hidden" }}>
 
-                        {/* Content Area (Reusing the robust details layout) */}
-                        <div className="container mx-auto px-4 md:px-8 pt-24 pb-12 max-w-[85rem] min-h-full flex flex-col justify-start relative">
-                            {/* Header inside curtain */}
-                            <div className="text-center md:text-left mb-8 md:mb-12">
-                                <h1 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">
-                                    {activeData.title}
-                                </h1>
+                            {/* Sticky close button at top-right of the scroll container */}
+                            <div style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", justifyContent: "flex-end", padding: "1.5rem 1.5rem 0" }}>
+                                <button
+                                    onClick={() => setActiveServiceId(null)}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        width: 48,
+                                        height: 48,
+                                        borderRadius: "50%",
+                                        background: "rgba(0,0,0,0.08)",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        transition: "background 0.2s",
+                                        backdropFilter: "blur(8px)",
+                                        boxShadow: "0 2px 12px rgba(0,0,0,0.1)"
+                                    }}
+                                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,0,0,0.16)")}
+                                    onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,0,0,0.08)")}
+                                    aria-label="Cerrar"
+                                >
+                                    <X size={22} color="#000" />
+                                </button>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8 lg:gap-16 items-start flex-1">
-                                {/* Text Column */}
-                                <div className="flex flex-col justify-center w-full max-w-xl mx-auto lg:max-w-none">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-black font-sans tracking-tight text-black leading-[1.1]">
-                                            {activeData.contentTitleHighlight}
-                                        </h3>
-                                    </div>
-                                    <p className="text-lg md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary mb-4">
-                                        {activeData.subtitle}
-                                    </p>
-                                    <p className="text-sm md:text-base text-neutral-600 leading-relaxed lg:leading-loose mb-8 font-light italic">
-                                        {activeData.content}
-                                    </p>
+                            {/* Page content */}
+                            <div className="container mx-auto px-6 md:px-12 pb-24 max-w-[85rem]" style={{ marginTop: "-0.5rem" }}>
 
-                                    {/* Benefits List */}
-                                    <div className="mb-8">
-                                        <h4 className="text-xs md:text-sm font-black uppercase tracking-[0.2em] text-neutral-400 mb-4">Incluye</h4>
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-                                            {activeData.includes.map((item, idx) => (
-                                                <li key={idx} className="flex items-start gap-3 text-neutral-600 text-[13px] md:text-sm">
-                                                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                                    <span className="leading-snug">{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {/* Extras */}
-                                    <div className="mb-8 p-4 bg-white/50 border border-neutral-200 rounded-lg hidden md:block w-full">
-                                        <h4 className="text-xs font-bold uppercase text-neutral-400 mb-1.5">Extras opcionales</h4>
-                                        <p className="text-sm text-neutral-500 italic leading-snug">{activeData.extras}</p>
-                                    </div>
-
-                                    {/* CTA Only - Centered or Left */}
-                                    <div className="flex justify-center lg:justify-start pt-2">
-                                        <a
-                                            href="#contact"
-                                            onClick={() => setActiveServiceId(null)} // Cerrar cortina si navega a contacto
-                                            className="group relative px-8 lg:px-12 py-4 lg:py-5 bg-black text-white font-bold text-sm lg:text-base tracking-widest uppercase overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-                                        >
-                                            <span className="relative z-10 flex items-center gap-3">
-                                                {activeData.cta}
-                                                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                                            </span>
-                                        </a>
-                                    </div>
+                                {/* Title */}
+                                <div className="mb-10">
+                                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default leading-none">
+                                        {activeData.title}
+                                    </h1>
                                 </div>
 
-                                {/* Media/Video/Image Column */}
-                                <div className="relative items-center justify-center [perspective:1000px] h-full min-h-[400px] lg:min-h-[600px] flex">
-                                    <div className="relative aspect-auto h-full w-full max-h-[700px] overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] bg-gray-100 border border-black/5 hover:shadow-[0_25px_60px_rgba(0,0,0,0.3)] hover:-translate-y-2 transition-all duration-500">
+                                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-16 items-start">
+
+                                    {/* ── Left: Text ── */}
+                                    <div className="flex flex-col">
+                                        <h3 className="text-2xl md:text-4xl font-black tracking-tight text-black leading-snug mb-3">
+                                            {activeData.contentTitleHighlight}
+                                        </h3>
+                                        <p className="text-base md:text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500 cursor-default mb-5">
+                                            {activeData.subtitle}
+                                        </p>
+                                        <p className="text-sm md:text-base text-neutral-600 leading-relaxed mb-8 font-light italic">
+                                            {activeData.content}
+                                        </p>
+
+                                        {/* Includes */}
+                                        <div className="mb-8">
+                                            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-neutral-400 mb-4">Incluye</h4>
+                                            <ul className="flex flex-col gap-3">
+                                                {activeData.includes.map((item, idx) => (
+                                                    <li key={idx} className="flex items-start gap-3 text-neutral-700 text-sm md:text-base">
+                                                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                                        <span className="leading-snug">{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        {/* Extras */}
+                                        <div className="mb-8 p-4 rounded-xl border border-black/10 bg-black/5">
+                                            <h4 className="text-xs font-bold uppercase text-neutral-400 mb-1.5">Extras opcionales</h4>
+                                            <p className="text-sm text-neutral-500 italic leading-snug">{activeData.extras}</p>
+                                        </div>
+
+                                        {/* CTA */}
+                                        <div>
+                                            <a
+                                                href="#contact"
+                                                onClick={() => setActiveServiceId(null)}
+                                                className="group inline-flex items-center gap-3 px-8 py-4 bg-black text-white font-bold text-sm tracking-widest uppercase transition-all duration-300 hover:scale-105 active:scale-95"
+                                            >
+                                                {activeData.cta}
+                                                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {/* ── Right: Media ── */}
+                                    <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl bg-neutral-200"
+                                        style={{ minHeight: 320, aspectRatio: "16/10" }}>
                                         {activeData.video ? (
                                             <video
                                                 src={activeData.video}
@@ -282,15 +300,15 @@ export default function Services() {
                                                 loop
                                                 muted
                                                 playsInline
-                                                className="h-full w-full object-cover opacity-90 hover:scale-105 transition-transform duration-1000"
+                                                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
                                             />
                                         ) : (
                                             <Image
                                                 src={activeData.image}
                                                 alt={activeData.title}
                                                 fill
-                                                sizes="(max-width: 1024px) 100vw, 50vw"
-                                                className="object-cover hover:scale-105 transition-transform duration-1000"
+                                                sizes="(max-width: 1024px) 100vw, 55vw"
+                                                className="object-cover"
                                             />
                                         )}
                                     </div>

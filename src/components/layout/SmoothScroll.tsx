@@ -58,7 +58,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     return (
         <div id="smooth-wrapper" className="relative w-full">
-            <div id="smooth-content" className="will-change-transform">
+            <div id="smooth-content">
                 {children}
             </div>
         </div>
