@@ -1,63 +1,82 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
+import { gsap } from "gsap"
 
 export function CustomCursor() {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+    const cursorRef = useRef<HTMLDivElement>(null)
+    const followerRef = useRef<HTMLDivElement>(null)
     const [isHovering, setIsHovering] = useState(false)
 
     useEffect(() => {
-        const updateMousePosition = (e: MouseEvent) => {
-            setMousePosition({ x: e.clientX, y: e.clientY })
+        // Accessibility check
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        if (prefersReducedMotion) return
+
+        if (!cursorRef.current || !followerRef.current) return
+
+        // Centrar elementos desde su diseño original (para que (0,0) esté en el centro)
+        gsap.set(cursorRef.current, { xPercent: -50, yPercent: -50, opacity: 0 })
+        gsap.set(followerRef.current, { xPercent: -50, yPercent: -50, opacity: 0 })
+
+        // quickTo devuelve una función que actualiza instantáneamente sin lag
+        const xToCursor = gsap.quickTo(cursorRef.current, "x", { duration: 0.1, ease: "power3" })
+        const yToCursor = gsap.quickTo(cursorRef.current, "y", { duration: 0.1, ease: "power3" })
+        
+        const xToFollower = gsap.quickTo(followerRef.current, "x", { duration: 0.5, ease: "power3" })
+        const yToFollower = gsap.quickTo(followerRef.current, "y", { duration: 0.5, ease: "power3" })
+
+        let hasMoved = false
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!hasMoved) {
+                gsap.to([cursorRef.current, followerRef.current], { opacity: 1, duration: 0.5 })
+                hasMoved = true
+            }
+            xToCursor(e.clientX)
+            yToCursor(e.clientY)
+            xToFollower(e.clientX)
+            yToFollower(e.clientY)
         }
 
         const handleMouseOver = (e: MouseEvent) => {
-            if ((e.target as HTMLElement).closest("a, button, input, textarea, .cursor-hover")) {
+            if ((e.target as HTMLElement).closest("a, button, input, textarea, .cursor-hover, [data-magnetic]")) {
                 setIsHovering(true)
             } else {
                 setIsHovering(false)
             }
         }
 
-        window.addEventListener("mousemove", updateMousePosition)
+        window.addEventListener("mousemove", handleMouseMove)
         window.addEventListener("mouseover", handleMouseOver)
 
         return () => {
-            window.removeEventListener("mousemove", updateMousePosition)
+            window.removeEventListener("mousemove", handleMouseMove)
             window.removeEventListener("mouseover", handleMouseOver)
         }
     }, [])
 
+    useEffect(() => {
+        if (!cursorRef.current || !followerRef.current) return
+
+        if (isHovering) {
+            gsap.to(cursorRef.current, { scale: 2.5, duration: 0.3, ease: "power2.out" })
+            gsap.to(followerRef.current, { scale: 1.5, opacity: 0.2, duration: 0.3, ease: "power2.out" })
+        } else {
+            gsap.to(cursorRef.current, { scale: 1, duration: 0.3, ease: "power2.out" })
+            gsap.to(followerRef.current, { scale: 1, opacity: 0.5, duration: 0.3, ease: "power2.out" })
+        }
+    }, [isHovering])
+
     return (
         <div className="hidden md:block">
-            <motion.div
-                className="pointer-events-none fixed left-0 top-0 z-[9999] h-4 w-4 rounded-full bg-primary mix-blend-difference"
-                animate={{
-                    x: mousePosition.x - 8,
-                    y: mousePosition.y - 8,
-                    scale: isHovering ? 2.5 : 1,
-                }}
-                transition={{
-                    type: "spring",
-                    stiffness: 150,
-                    damping: 15,
-                    mass: 0.1,
-                }}
+            <div
+                ref={cursorRef}
+                className="pointer-events-none fixed left-0 top-0 z-[9999] h-3 w-3 rounded-full bg-primary mix-blend-difference"
             />
-            <motion.div
-                className="pointer-events-none fixed left-0 top-0 z-[9998] h-8 w-8 rounded-full border border-primary opacity-50"
-                animate={{
-                    x: mousePosition.x - 16,
-                    y: mousePosition.y - 16,
-                    scale: isHovering ? 1.5 : 1,
-                }}
-                transition={{
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 20,
-                    mass: 0.2,
-                }}
+            <div
+                ref={followerRef}
+                className="pointer-events-none fixed left-0 top-0 z-[9998] h-8 w-8 rounded-full border border-primary/50"
             />
         </div>
     )

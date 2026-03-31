@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, ArrowRight, X } from "lucide-react"
+import { ArrowRight, Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -52,7 +52,7 @@ const servicesData = [
         ],
         extras: "Chat en vivo, chatbot, sitio multi-idioma.",
         price: "$500.000",
-        cta: "Quiero una web profesional",
+        cta: "Quiero una web",
         image: "/images/maria-reina.png",
         video: "/videos/Institucion1.mp4"
     },
@@ -64,10 +64,10 @@ const servicesData = [
         content: "Desarrollamos tiendas online funcionales, claras y optimizadas para vender. Desde la arquitectura de productos hasta la experiencia de compra, todo está diseñado para crecer, escalar y adaptarse a tu negocio.",
         includes: [
             "Todo lo incluido en la Página Institucional",
-            "Plataforma e-commerce completa (Shopify o WooCommerce)",
+            "Plataforma e-commerce (Shopify o WooCommerce)",
             "Catálogo de productos ilimitado",
             "Carrito de compras y checkout seguro",
-            "Métodos de pago locales (Mercado Pago, tarjetas y transferencias)",
+            "Métodos de pago locales (Mercado Pago, medios offline)",
             "Gestión de envíos y stock",
             "Integración con CRM, newsletter y Analytics",
             "SEO básico para productos",
@@ -83,223 +83,228 @@ const servicesData = [
 ]
 
 export default function Services() {
-    const sectionRef = useRef<HTMLDivElement>(null)
-    const [activeServiceId, setActiveServiceId] = useState<string | null>(null)
+    const [openIndex, setOpenIndex] = useState<number | null>(null)
+    const containerRef = useRef<HTMLElement>(null)
 
-    // GSAP Scroll Animation for the Titles
+    const toggleAccordion = (index: number) => {
+        setOpenIndex(openIndex === index ? null : index)
+    }
+
     useGSAP(() => {
-        const titles = gsap.utils.toArray<HTMLElement>(".service-btn")
-        if (titles.length === 0 || !sectionRef.current) return
-
-        // Create a Timeline tied to the scroll of this section natively
-        const tl = gsap.timeline({
+        // Animación de cascada para el contenedor general y listado (stagger)
+        const rows = gsap.utils.toArray(".service-row")
+        
+        gsap.from(".services-header", {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
             scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top top",
-                end: "bottom bottom", // Anima durante todo el trayecto de los 300vh
-                scrub: 1, // Smooth scrub
+                trigger: containerRef.current,
+                start: "top 75%",
+                toggleActions: "play none none reverse"
             }
         })
 
-        // Initial invisible pushed-down state
-        gsap.set(titles, { y: 150, opacity: 0, scale: 0.9 })
+        if (rows.length > 0) {
+            gsap.from(rows, {
+                y: 60,
+                opacity: 0,
+                duration: 1.2,
+                stagger: 0.15,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: ".services-list",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            })
+        }
 
-        // Sequentially rise the titles as we scroll
-        titles.forEach((title, i) => {
-            tl.to(title, {
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                ease: "power2.out",
-                duration: 1
-            }, i * 0.8) // Stagger start time slightly wider
+        // Parallax sutil en elementos dentro de la lista al scrollear (efecto Awwwards)
+        rows.forEach((row: any, i) => {
+            gsap.to(row, {
+                y: -30, // Desplazamiento sutil hacia arriba mientras bajamos
+                ease: "none",
+                scrollTrigger: {
+                    trigger: row,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            })
         })
 
-        // Añadimos un espacio de tiempo inactivo al final de la línea de tiempo.
-        // Esto crea un "buffer" donde el usuario sigue haciendo scroll pero no pasa nada,
-        // dándole tiempo para apreciar el menú terminado antes de que se despegue.
-        tl.to({}, { duration: 1 })
-
-    }, { scope: sectionRef })
-
-    // Body lock when curtain is open
-    useEffect(() => {
-        if (activeServiceId) {
-            document.body.style.overflow = "hidden"
-            if (typeof window !== "undefined" && (window as any).lenis) {
-                (window as any).lenis.stop()
-            }
-        } else {
-            document.body.style.overflow = ""
-            if (typeof window !== "undefined" && (window as any).lenis) {
-                (window as any).lenis.start()
-            }
-        }
-        return () => {
-            document.body.style.overflow = ""
-            if (typeof window !== "undefined" && (window as any).lenis) {
-                (window as any).lenis.start()
-            }
-        }
-    }, [activeServiceId])
-
-    const activeData = servicesData.find(s => s.id === activeServiceId)
+    }, { scope: containerRef })
 
     return (
-        <>
-        <section ref={sectionRef} id="services" className="relative w-full h-[400vh] bg-[#0A0A0A]">
+        <section ref={containerRef} id="services" className="relative w-full bg-[#0A0A0A] py-24 md:py-32 xl:py-40 text-white overflow-hidden">
+            {/* Background elements minimal */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05]" 
+                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} 
+            />
             
-            {/* Visual Viewport locked natively */}
-            <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0A]">
-                
-                {/* Awwwards Abstract Dark Grey Architectural Background */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    {/* Subtle Crosshair Grid */}
-                    <div className="absolute inset-0 opacity-[0.15]" 
-                         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23666666' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} 
-                    />
-                    
-                    {/* Volumetric Fog / Shifting Spotlights */}
-                    <motion.div
-                        animate={{ x: ["-5%", "5%", "-5%"], y: ["0%", "10%", "0%"] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -top-1/4 -left-1/4 w-[75vw] h-[75vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.25]"
-                        style={{ background: "radial-gradient(circle, #595959 0%, transparent 70%)" }}
-                    />
-                    <motion.div
-                        animate={{ x: ["5%", "-5%", "5%"], y: ["10%", "0%", "10%"] }}
-                        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute -bottom-1/4 -right-1/4 w-[80vw] h-[80vw] rounded-full mix-blend-screen blur-[100px] md:blur-[150px] opacity-[0.20]"
-                        style={{ background: "radial-gradient(circle, #404040 0%, transparent 70%)" }}
-                    />
-                    
-                    {/* Global Dark Vignette Overlay for Center Focus */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0A0A0A_85%)] z-10" />
+            <div className="container mx-auto px-4 md:px-8 lg:px-12 xl:px-16 relative z-10 w-full max-w-[1600px]">
+                {/* Section Header */}
+                <div className="services-header flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-8">
+                    <div>
+                        <span className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-white/40 mb-4 block">
+                            Nuestras Especialidades
+                        </span>
+                        <h2 className="text-4xl md:text-5xl lg:text-5xl font-light tracking-tighter">
+                            Servicios Core
+                        </h2>
+                    </div>
+                    <div className="max-w-md text-white/50 text-sm md:text-base font-light">
+                        Diseñamos soluciones digitales enfocadas en la conversión, estructuradas con precisión y desarrolladas para comunicar el valor de tu marca con claridad.
+                    </div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center gap-6 sm:gap-10 perspective-1000 z-20 w-full px-4 relative">
-                    {servicesData.map((svc) => (
-                        <button
-                            key={svc.id}
-                            onClick={() => setActiveServiceId(svc.id)}
-                            className="service-btn group relative flex items-center justify-center w-full max-w-5xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer origin-center will-change-transform"
-                        >
-                            <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[rgba(255,255,255,0.9)] via-[rgba(200,200,200,0.8)] to-[rgba(150,150,150,0.6)] group-hover:from-primary group-hover:via-accent group-hover:to-secondary transition-all duration-500 leading-none select-none text-center drop-shadow-2xl">
-                                {svc.title}
-                            </h2>
-                            {/* Glow accent */}
-                            <div className="absolute inset-0 bg-accent/20 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full pointer-events-none z-[-1]" />
-                        </button>
-                    ))}
-                </div>
-            </div>
-        </section>
+                {/* Accordion List */}
+                <div className="services-list flex flex-col border-t border-white/10">
+                    {servicesData.map((svc, index) => {
+                        const isOpen = openIndex === index;
 
-            {/* The Fullscreen Curtain Reveal Overlay */}
-            <AnimatePresence>
-                {activeData && (
-                    <motion.div
-                        initial={{ y: "100%" }}
-                        animate={{ y: "0%" }}
-                        exit={{ y: "100%" }}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                        className="fixed inset-0 z-[100] bg-[#FFFFF0] text-black overflow-y-auto overflow-x-hidden flex flex-col"
-                    >
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setActiveServiceId(null)}
-                            className="fixed top-6 right-6 md:top-10 md:right-10 z-[110] p-3 md:p-4 bg-black/5 hover:bg-black/10 rounded-full transition-transform duration-300 hover:rotate-90 cursor-pointer flex items-center justify-center backdrop-blur-md"
-                        >
-                            <X className="w-6 h-6 md:w-8 md:h-8 text-black" />
-                            <span className="sr-only">Cerrar</span>
-                        </button>
-
-                        {/* Content Area (Reusing the robust details layout) */}
-                        <div className="container mx-auto px-4 md:px-8 pt-24 pb-12 max-w-[85rem] min-h-full flex flex-col justify-start relative">
-                            {/* Header inside curtain */}
-                            <div className="text-center md:text-left mb-8 md:mb-12">
-                                <h1 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">
-                                    {activeData.title}
-                                </h1>
-                            </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8 lg:gap-16 items-start flex-1">
-                                {/* Text Column */}
-                                <div className="flex flex-col justify-center w-full max-w-xl mx-auto lg:max-w-none">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-black font-sans tracking-tight text-black leading-[1.1]">
-                                            {activeData.contentTitleHighlight}
+                        return (
+                            <div 
+                                key={svc.id} 
+                                className="service-row group/item flex flex-col border-b border-white/10"
+                            >
+                                {/* Header / Trigger */}
+                                <button
+                                    onClick={() => toggleAccordion(index)}
+                                    className="w-full flex items-center justify-between py-6 md:py-10 lg:py-12 text-left hover:bg-white/[0.015] transition-colors duration-500 cursor-pointer group"
+                                >
+                                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-12 lg:gap-20">
+                                        {/* Number */}
+                                        <span className="text-xs md:text-sm lg:text-base font-mono text-white/30 group-hover:text-white/60 transition-colors w-8 md:w-10">
+                                            {(index + 1).toString().padStart(2, '0')}
+                                        </span>
+                                        {/* Main Title */}
+                                        <h3 className="text-5xl sm:text-6xl md:text-7xl lg:text-[7vw] leading-[0.9] font-black tracking-tighter uppercase text-white/90 group-hover:text-white transition-colors">
+                                            {svc.title}
                                         </h3>
                                     </div>
-                                    <p className="text-lg md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary mb-4">
-                                        {activeData.subtitle}
-                                    </p>
-                                    <p className="text-sm md:text-base text-neutral-600 leading-relaxed lg:leading-loose mb-8 font-light italic">
-                                        {activeData.content}
-                                    </p>
-
-                                    {/* Benefits List */}
-                                    <div className="mb-8">
-                                        <h4 className="text-xs md:text-sm font-black uppercase tracking-[0.2em] text-neutral-400 mb-4">Incluye</h4>
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-                                            {activeData.includes.map((item, idx) => (
-                                                <li key={idx} className="flex items-start gap-3 text-neutral-600 text-[13px] md:text-sm">
-                                                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                                    <span className="leading-snug">{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    {/* Icon */}
+                                    <div className="relative w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0 text-white/30 group-hover:text-white transition-colors">
+                                        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.5, ease: "easeInOut" }}>
+                                            {isOpen ? <Minus className="w-5 h-5 md:w-8 md:h-8" /> : <Plus className="w-5 h-5 md:w-8 md:h-8" />}
+                                        </motion.div>
                                     </div>
+                                </button>
 
-                                    {/* Extras */}
-                                    <div className="mb-8 p-4 bg-white/50 border border-neutral-200 rounded-lg hidden md:block w-full">
-                                        <h4 className="text-xs font-bold uppercase text-neutral-400 mb-1.5">Extras opcionales</h4>
-                                        <p className="text-sm text-neutral-500 italic leading-snug">{activeData.extras}</p>
-                                    </div>
-
-                                    {/* CTA Only - Centered or Left */}
-                                    <div className="flex justify-center lg:justify-start pt-2">
-                                        <a
-                                            href="#contact"
-                                            onClick={() => setActiveServiceId(null)} // Cerrar cortina si navega a contacto
-                                            className="group relative px-8 lg:px-12 py-4 lg:py-5 bg-black text-white font-bold text-sm lg:text-base tracking-widest uppercase overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+                                {/* Expanding Body */}
+                                <AnimatePresence initial={false}>
+                                    {isOpen && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                                            className="overflow-hidden"
                                         >
-                                            <span className="relative z-10 flex items-center gap-3">
-                                                {activeData.cta}
-                                                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
+                                            <div className="pb-12 md:pb-24 pt-4 md:pt-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-12 xl:gap-20 items-stretch border-t border-white/5 mt-2">
+                                                
+                                                {/* Left: Info Section */}
+                                                <div className="lg:col-span-7 xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+                                                    
+                                                    {/* Description Box */}
+                                                    <div className="flex flex-col gap-6">
+                                                        <h4 className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-white/30 border-b border-white/10 pb-4">
+                                                            Approach // Enfoque
+                                                        </h4>
+                                                        <p className="text-base md:text-lg text-white/70 font-light leading-relaxed">
+                                                            {svc.content}
+                                                        </p>
+                                                        <div className="mt-4 border-l-2 border-white/10 pl-4 py-1">
+                                                            <p className="text-xs md:text-sm text-white/40 font-light italic">
+                                                                <span className="font-semibold text-white/60 not-italic">Extras sugeridos: </span> {svc.extras}
+                                                            </p>
+                                                        </div>
+                                                    </div>
 
-                                {/* Media/Video/Image Column */}
-                                <div className="relative items-center justify-center [perspective:1000px] h-full min-h-[400px] lg:min-h-[600px] flex">
-                                    <div className="relative aspect-auto h-full w-full max-h-[700px] overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] bg-gray-100 border border-black/5 hover:shadow-[0_25px_60px_rgba(0,0,0,0.3)] hover:-translate-y-2 transition-all duration-500">
-                                        {activeData.video ? (
-                                            <video
-                                                src={activeData.video}
-                                                autoPlay
-                                                loop
-                                                muted
-                                                playsInline
-                                                className="h-full w-full object-cover opacity-90 hover:scale-105 transition-transform duration-1000"
-                                            />
-                                        ) : (
-                                            <Image
-                                                src={activeData.image}
-                                                alt={activeData.title}
-                                                fill
-                                                sizes="(max-width: 1024px) 100vw, 50vw"
-                                                className="object-cover hover:scale-105 transition-transform duration-1000"
-                                            />
-                                        )}
-                                    </div>
-                                </div>
+                                                    {/* Includes List */}
+                                                    <div className="flex flex-col gap-6 h-full justify-between">
+                                                        <div>
+                                                            <h4 className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-white/30 border-b border-white/10 pb-4 mb-6">
+                                                                Detalle de Entregables
+                                                            </h4>
+                                                            <ul className="flex flex-col gap-3">
+                                                                {svc.includes.slice(0, 6).map((item, idx) => (
+                                                                    <li key={idx} className="flex items-start gap-4">
+                                                                        <span className="w-1 h-1 rounded-full bg-white/30 mt-[0.6rem] shrink-0"></span>
+                                                                        <span className="text-sm md:text-base text-white/70 font-light leading-snug">{item}</span>
+                                                                    </li>
+                                                                ))}
+                                                                {svc.includes.length > 6 && (
+                                                                    <li className="text-xs text-white/30 font-mono mt-3 ml-5">
+                                                                        + {svc.includes.length - 6} ítems adicionales
+                                                                    </li>
+                                                                )}
+                                                            </ul>
+                                                        </div>
+
+                                                        {/* CTA */}
+                                                        <div className="mt-10 pt-8 border-t border-white/10 flex flex-col items-start gap-6">
+                                                            <a
+                                                                href="#contact"
+                                                                data-magnetic="true"
+                                                                className="group/cta inline-flex items-center gap-4 text-xs font-bold tracking-[0.2em] uppercase text-white"
+                                                            >
+                                                                <span className="border-b border-white/30 pb-1 group-hover/cta:border-white transition-colors">
+                                                                    {svc.cta}
+                                                                </span>
+                                                                <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover/cta:bg-white group-hover/cta:text-black group-hover/cta:border-transparent transition-all duration-300">
+                                                                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/cta:-rotate-45" />
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Right: Media Grid */}
+                                                <div className="lg:col-span-5 xl:col-span-4 relative pl-0 lg:pl-10 lg:border-l lg:border-white/10 flex flex-col items-start lg:items-center justify-center">
+                                                    <div className="w-full aspect-video relative overflow-hidden bg-white/5 border border-white/10 shadow-2xl">
+                                                        {svc.video ? (
+                                                            <video
+                                                                src={svc.video}
+                                                                autoPlay
+                                                                loop
+                                                                muted
+                                                                playsInline
+                                                                className="parallax-media h-full w-full object-cover grayscale-[80%] hover:grayscale-0 transition-all duration-1000 scale-[1.15] hover:scale-110"
+                                                            />
+                                                        ) : (
+                                                            <Image
+                                                                src={svc.image}
+                                                                alt={svc.title}
+                                                                fill
+                                                                sizes="(max-width: 1024px) 100vw, 33vw"
+                                                                className="parallax-media object-cover grayscale-[80%] hover:grayscale-0 transition-all duration-1000 scale-[1.15] hover:scale-110"
+                                                            />
+                                                        )}
+                                                        {/* Badge */}
+                                                        <div className="absolute top-4 left-4 lg:top-6 lg:left-6 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/10 pointer-events-none">
+                                                            <span className="text-[10px] text-white/80 uppercase tracking-widest font-mono">
+                                                                {svc.contentTitleHighlight}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </>
+                        );
+                    })}
+                </div>
+            </div>
+            
+            {/* Ambient Lights */}
+            <div className="absolute top-1/4 left-0 w-[40vw] h-[40vw] bg-white/[0.02] blur-[150px] rounded-full pointer-events-none z-0 mix-blend-screen" />
+            <div className="absolute bottom-1/4 right-0 w-[50vw] h-[50vw] bg-white/[0.015] blur-[150px] rounded-full pointer-events-none z-0 mix-blend-screen" />
+        </section>
     )
 }

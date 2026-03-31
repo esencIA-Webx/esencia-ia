@@ -1,66 +1,46 @@
-"use client"
+"use client";
 
-import { ReactNode, useEffect, useRef } from "react"
-import Lenis from "lenis"
-import gsap from "gsap"
+import { ReactLenis } from 'lenis/react'
+import { gsap } from 'gsap'
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useEffect, useRef } from 'react'
 
-export function SmoothScroll({ children }: { children: ReactNode }) {
-    const scrollRef = useRef<HTMLDivElement>(null)
+// Aseguramos registrar el plugin de GSAP en el cliente
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger)
+}
 
-    useEffect(() => {
-        // Register GSAP plugins
-        gsap.registerPlugin(ScrollTrigger)
+export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<any>(null)
+  
+  useEffect(() => {
+    // Sincroniza el ticker de GSAP con el bucle de actualización de Lenis
+    function update(time: number) {
+      if (lenisRef.current?.lenis) {
+          lenisRef.current.lenis.raf(time * 1000)
+      }
+    }
+  
+    // Agregamos el update de Lenis al ticker principal de GSAP para evitar jitter
+    gsap.ticker.add(update)
+  
+    // Sincronizar eventos de scroll para que ScrollTrigger recalcule posiciones
+    lenisRef.current?.lenis?.on('scroll', ScrollTrigger.update)
 
-        // Accessibility: check for reduced motion preference
-        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        if (prefersReducedMotion) return
+    // Desactivamos el suavizado de lag de GSAP para que Lenis tome control real
+    gsap.ticker.lagSmoothing(0)
 
-        // Initialize Lenis with premium parameters
-        const lenis = new Lenis({
-            duration: 1.4, // Slightly longer for that "premium" feel
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential easing for smooth deceleration
-            orientation: "vertical",
-            gestureOrientation: "vertical",
-            smoothWheel: true,
-            wheelMultiplier: 1.1,
-            touchMultiplier: 1.5,
-            lerp: 0.08, // The "magic" smoothness factor
-        })
+    return () => {
+      gsap.ticker.remove(update)
+    }
+  }, [])
 
-        // Expose lenis instance globally for use in other components (like parallax)
-        if (typeof window !== "undefined") {
-            (window as any).lenis = lenis
-        }
-
-        // Synchronize GSAP ScrollTrigger with Lenis
-        lenis.on('scroll', (e: any) => {
-            ScrollTrigger.update()
-        })
-
-        // Use GSAP ticker for the requestAnimationFrame loop to ensure precise sync
-        const update = (time: number) => {
-            lenis.raf(time * 1000)
-        }
-        
-        gsap.ticker.add(update)
-        gsap.ticker.lagSmoothing(0)
-
-        // Clean up
-        return () => {
-            gsap.ticker.remove(update)
-            lenis.destroy()
-            if (typeof window !== "undefined" && (window as any).lenis === lenis) {
-                delete (window as any).lenis
-            }
-        }
-    }, [])
-
-    return (
-        <div id="smooth-wrapper" className="relative w-full">
-            <div id="smooth-content" className="will-change-transform">
-                {children}
-            </div>
-        </div>
-    )
+  return (
+    // 'root' inyecta lenis al 'html/body' en lugar de crear un contenedor overflow-auto.
+    // 'autoRaf={false}' permite que GSAP tome control del bucle de animación.
+    // 'lerp' maneja la fricción/inercia (menor valor = mayor inercia).
+    <ReactLenis root ref={lenisRef} autoRaf={false} options={{ lerp: 0.07, duration: 1.5, smoothWheel: true, wheelMultiplier: 1.2 }}>
+      {children}
+    </ReactLenis>
+  )
 }
