@@ -123,12 +123,12 @@ export function HeroTransition() {
                 </div>
                 
                 {/* Background Typography - Constantly Moving */}
-                <div className="absolute flex flex-col justify-center inset-0 gap-4 opacity-[0.03] pointer-events-none select-none z-0 overflow-hidden">
+                <div className="absolute flex flex-col justify-start md:justify-center inset-0 gap-2 md:gap-4 opacity-[0.03] pointer-events-none select-none z-0 overflow-hidden">
                     <motion.div 
                         initial={{ x: "0%" }}
                         animate={{ x: "-50%" }}
                         transition={{ repeat: Infinity, duration: 35, ease: "linear" }}
-                        className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter will-change-transform"
+                        className="text-[20vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter will-change-transform"
                     >
                         DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB
                     </motion.div>
@@ -136,7 +136,7 @@ export function HeroTransition() {
                         initial={{ x: "-50%" }}
                         animate={{ x: "0%" }}
                         transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-                        className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent will-change-transform" style={{ WebkitTextStroke: "2px rgba(255,255,255,1)" }}
+                        className="text-[20vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent will-change-transform" style={{ WebkitTextStroke: "2px rgba(255,255,255,1)" }}
                     >
                         EXPERIENCIA DIGITAL EXPERIENCIA DIGITAL EXPERIENCIA DIGITAL EXPERIENCIA DIGITAL
                     </motion.div>
@@ -144,9 +144,42 @@ export function HeroTransition() {
                         initial={{ x: "0%" }}
                         animate={{ x: "-50%" }}
                         transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
-                        className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter will-change-transform"
+                        className="text-[20vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter will-change-transform"
                     >
                         ESTRATEGIA DIGITAL ESTRATEGIA DIGITAL ESTRATEGIA DIGITAL ESTRATEGIA DIGITAL
+                    </motion.div>
+                    {/* Filas extra — solo en móvil para cubrir el viewport completo */}
+                    <motion.div 
+                        initial={{ x: "-50%" }}
+                        animate={{ x: "0%" }}
+                        transition={{ repeat: Infinity, duration: 38, ease: "linear" }}
+                        className="md:hidden text-[20vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent will-change-transform" style={{ WebkitTextStroke: "2px rgba(255,255,255,1)" }}
+                    >
+                        CREATIVIDAD IA CREATIVIDAD IA CREATIVIDAD IA CREATIVIDAD IA CREATIVIDAD IA
+                    </motion.div>
+                    <motion.div 
+                        initial={{ x: "0%" }}
+                        animate={{ x: "-50%" }}
+                        transition={{ repeat: Infinity, duration: 33, ease: "linear" }}
+                        className="md:hidden text-[20vw] font-black whitespace-nowrap leading-none tracking-tighter will-change-transform"
+                    >
+                        INNOVACIÓN WEB INNOVACIÓN WEB INNOVACIÓN WEB INNOVACIÓN WEB
+                    </motion.div>
+                    <motion.div 
+                        initial={{ x: "-50%" }}
+                        animate={{ x: "0%" }}
+                        transition={{ repeat: Infinity, duration: 45, ease: "linear" }}
+                        className="md:hidden text-[20vw] font-black whitespace-nowrap leading-none tracking-tighter will-change-transform"
+                    >
+                        DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB DISEÑO WEB
+                    </motion.div>
+                    <motion.div 
+                        initial={{ x: "0%" }}
+                        animate={{ x: "-50%" }}
+                        transition={{ repeat: Infinity, duration: 28, ease: "linear" }}
+                        className="md:hidden text-[20vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent will-change-transform" style={{ WebkitTextStroke: "2px rgba(255,255,255,1)" }}
+                    >
+                        ESTRATEGIA IA ESTRATEGIA IA ESTRATEGIA IA ESTRATEGIA IA ESTRATEGIA IA
                     </motion.div>
                 </div>
 
