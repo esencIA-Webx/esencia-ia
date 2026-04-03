@@ -1,252 +1,225 @@
 "use client"
 
-import { useRef, useEffect } from "react"
-import { motion, useInView, useScroll, useTransform } from "framer-motion"
+import { useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import gsap from "gsap"
+import { useGSAP } from "@gsap/react"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!<>-_\\/[]{}—=+*^?#_"
-
-function ScrambleText({ text, duration = 1, className = "", as: Component = "span" }: { text: string, duration?: number, className?: string, as?: any }) {
-    const containerRef = useRef<HTMLElement>(null)
-    const isInView = useInView(containerRef, { once: true, amount: 0.5 })
-
-    useEffect(() => {
-        const container = containerRef.current
-        if (!container || !isInView) return
-
-        container.innerHTML = ""
-        const spans: HTMLSpanElement[] = []
-        
-        text.split("").forEach(ch => {
-            if (ch === " " || ch === "\n") {
-                 container.appendChild(document.createTextNode(ch))
-            } else {
-                 const span = document.createElement("span")
-                 span.className = "inline-block will-change-transform text-center"
-                 span.textContent = ch 
-                 span.setAttribute("data-char", ch)
-                 container.appendChild(span)
-                 spans.push(span)
-            }
-        })
-
-        requestAnimationFrame(() => {
-            spans.forEach(span => {
-                 const rect = span.getBoundingClientRect()
-                 if (rect.width > 0) {
-                     span.style.width = `${rect.width}px`
-                 }
-            })
-
-            const startTime = performance.now()
-            const frameInterval = 66; // ~15 FPS is enough for the scramble effect
-            let lastUpdate = 0;
-
-            const update = (currentTime: number) => {
-                const elapsed = currentTime - startTime
-                const totalDuration = duration * 1000
-
-                if (elapsed >= totalDuration) {
-                    spans.forEach(span => {
-                        span.textContent = span.getAttribute("data-char")
-                        span.style.width = "auto"
-                    })
-                    return
-                }
-
-                if (currentTime - lastUpdate >= frameInterval) {
-                    lastUpdate = currentTime
-                    spans.forEach(span => {
-                        span.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-                    })
-                }
-
-                requestAnimationFrame(update)
-            }
-
-            requestAnimationFrame(update)
-        })
-    }, [text, isInView, duration])
-
-    return <Component ref={containerRef} className={className} />
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(useGSAP, ScrollTrigger)
 }
+
+const PROJECTS = [
+    { title: "OWO 3D",              category: "Interactive 3D",     image: "/images/owo3d.png",        link: "https://owo3d.fun" },
+    { title: "Viajes Oeste",         category: "Web Design",         image: "/images/viajes-oeste.png", link: "https://viajesoeste-one.vercel.app" },
+    { title: "Inst. Maria Reina",    category: "Institutional",      image: "/images/maria-reina.png",  link: "https://page-institucional-two.vercel.app" },
+    { title: "KOE DIGITAL",          category: "Creative Agency",    image: "/images/koe-digital.png",  link: "https://koe-digital.vercel.app/" },
+    { title: "CLARK & TIGRE",        category: "E-Commerce",         image: "/images/clark-tigre.png",  link: "https://www.clarkytigreverde.com/" },
+    { title: "ARTE A MEDIDA",        category: "Portfolio",          image: "/images/arte-fondo.png",   link: "https://arteamedida.vercel.app/" }
+]
 
 export default function VisualContent() {
     const containerRef = useRef<HTMLElement>(null)
-    
-    // Total scroll duration: 400vh
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"]
-    })
 
-    // --- Timelines ---
-    
-    // HEADER: fades out immediately as scroll begins to remove "dead scroll" feel
-    const headerOpacity = useTransform(scrollYProgress, [0, 0.04], [1, 0])
+    useGSAP(() => {
+        // Estado inicial: todas las imagenes ocultas excepto la primera
+        PROJECTS.forEach((_, i) => {
+            if (i === 0) {
+                gsap.set(`.vc-panel-${i}`, { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0%)" })
+                gsap.set(`.vc-scale-${i}`, { scale: 1 })
+                gsap.set(`.vc-hud-${i}`,   { autoAlpha: 1, y: 0 })
+            } else {
+                // Cada panel empieza "oculto" con clip-path cerrado desde la derecha
+                gsap.set(`.vc-panel-${i}`, { autoAlpha: 1, clipPath: "inset(0% 100% 0% 0%)" })
+                gsap.set(`.vc-scale-${i}`, { scale: 1.06 })
+                gsap.set(`.vc-hud-${i}`,   { autoAlpha: 0, y: 30 })
+            }
+        })
 
-    // PROJECT 1 (OWO 3D) starts fading in simultaneously
-    const p1Opacity = useTransform(scrollYProgress, [0, 0.04], [0, 1])
-    const p1ClipPath = useTransform(scrollYProgress, [0, 0.08], ["inset(25% round 30px)", "inset(0% round 0px)"])
-    const p1Scale = useTransform(scrollYProgress, [0, 0.08], [1.1, 1])
-    const p1OverlayOpacity = useTransform(scrollYProgress, [0.04, 0.08, 0.12, 0.16], [0, 1, 1, 0])
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5,
+            }
+        })
 
-    // PROJECT 2 (Viajes Oeste)
-    const p2Opacity = useTransform(scrollYProgress, [0.12, 0.16], [0, 1]) 
-    const p2ClipPath = useTransform(scrollYProgress, [0.12, 0.20], ["inset(25% round 30px)", "inset(0% round 0px)"])
-    const p2Scale = useTransform(scrollYProgress, [0.12, 0.20], [1.1, 1])
-    const p2OverlayOpacity = useTransform(scrollYProgress, [0.16, 0.20, 0.28, 0.32], [0, 1, 1, 0])
+        let t = 0
 
-    // PROJECT 3 (Instituto Maria Reina)
-    const p3Opacity = useTransform(scrollYProgress, [0.28, 0.32], [0, 1])
-    const p3ClipPath = useTransform(scrollYProgress, [0.28, 0.36], ["inset(25% round 30px)", "inset(0% round 0px)"])
-    const p3Scale = useTransform(scrollYProgress, [0.28, 0.36], [1.1, 1])
-    const p3OverlayOpacity = useTransform(scrollYProgress, [0.32, 0.36, 0.44, 0.48], [0, 1, 1, 0])
+        for (let i = 1; i < PROJECTS.length; i++) {
+            // SALIDA: el panel anterior se hace zoom-in y se oscurece ligeramente
+            tl.to(`.vc-scale-${i-1}`, {
+                scale: 1.06,
+                duration: 1.2,
+                ease: "power2.inOut"
+            }, t)
+            tl.to(`.vc-overlay-${i-1}`, {
+                opacity: 0.35,
+                duration: 1.2,
+                ease: "power2.inOut"
+            }, t)
 
-    // PROJECT 4 (KOE DIGITAL)
-    const p4Opacity = useTransform(scrollYProgress, [0.44, 0.48], [0, 1])
-    const p4ClipPath = useTransform(scrollYProgress, [0.44, 0.52], ["inset(25% round 30px)", "inset(0% round 0px)"])
-    const p4Scale = useTransform(scrollYProgress, [0.44, 0.52], [1.1, 1])
-    const p4OverlayOpacity = useTransform(scrollYProgress, [0.48, 0.52, 0.60, 0.64], [0, 1, 1, 0])
+            // ENTRADA: clip-path wipe horizontal de derecha a izquierda
+            // El nuevo panel se "desvela" barriendo desde el borde derecho
+            tl.to(`.vc-panel-${i}`, {
+                clipPath: "inset(0% 0% 0% 0%)",
+                duration: 1.4,
+                ease: "power3.inOut"
+            }, t)
+            tl.to(`.vc-scale-${i}`, {
+                scale: 1,
+                duration: 1.4,
+                ease: "power3.inOut"
+            }, t)
 
-    // PROJECT 5 (KLARK & TIGRE VERDE)
-    const p5Opacity = useTransform(scrollYProgress, [0.60, 0.64], [0, 1])
-    const p5ClipPath = useTransform(scrollYProgress, [0.60, 0.68], ["inset(25% round 30px)", "inset(0% round 0px)"])
-    const p5Scale = useTransform(scrollYProgress, [0.60, 0.68], [1.1, 1])
-    const p5OverlayOpacity = useTransform(scrollYProgress, [0.64, 0.68, 0.76, 0.80], [0, 1, 1, 0])
+            // HUD: el anterior sube y desaparece
+            tl.to(`.vc-hud-${i-1}`, {
+                autoAlpha: 0,
+                y: -30,
+                duration: 0.5,
+                ease: "power2.in"
+            }, t + 0.1)
 
-    // PROJECT 6 (ARTE A MEDIDA)
-    const p6Opacity = useTransform(scrollYProgress, [0.76, 0.80], [0, 1])
-    const p6ClipPath = useTransform(scrollYProgress, [0.76, 0.88], ["inset(25% round 30px)", "inset(0% round 0px)"])
-    const p6Scale = useTransform(scrollYProgress, [0.76, 0.88], [1.1, 1])
-    const p6OverlayOpacity = useTransform(scrollYProgress, [0.84, 0.88, 1.0, 1.0], [0, 1, 1, 1])
+            // HUD: el nuevo aparece desde abajo
+            tl.to(`.vc-hud-${i}`, {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.6,
+                ease: "power2.out"
+            }, t + 0.7)
 
-    const projectsTransform = [
-        { clipPath: p1ClipPath, scale: p1Scale, opacity: p1Opacity, overlayOpacity: p1OverlayOpacity, zIndex: 10 },
-        { clipPath: p2ClipPath, scale: p2Scale, opacity: p2Opacity, overlayOpacity: p2OverlayOpacity, zIndex: 20 },
-        { clipPath: p3ClipPath, scale: p3Scale, opacity: p3Opacity, overlayOpacity: p3OverlayOpacity, zIndex: 30 },
-        { clipPath: p4ClipPath, scale: p4Scale, opacity: p4Opacity, overlayOpacity: p4OverlayOpacity, zIndex: 40 },
-        { clipPath: p5ClipPath, scale: p5Scale, opacity: p5Opacity, overlayOpacity: p5OverlayOpacity, zIndex: 50 },
-        { clipPath: p6ClipPath, scale: p6Scale, opacity: p6Opacity, overlayOpacity: p6OverlayOpacity, zIndex: 60 }
-    ]
+            // Pulso de línea separadora al transicionar
+            tl.fromTo(`.vc-line`, {
+                scaleX: 0,
+                transformOrigin: "left center"
+            }, {
+                scaleX: 1,
+                duration: 0.4,
+                ease: "power2.out"
+            }, t + 0.4)
+            tl.to(`.vc-line`, {
+                scaleX: 0,
+                transformOrigin: "right center",
+                duration: 0.4,
+                ease: "power2.in"
+            }, t + 0.8)
 
-    const PROJECTS = [
-        { title: "OWO 3D", image: "/images/owo3d.png", link: "https://owo3d.fun" },
-        { title: "Viajes Oeste", image: "/images/viajes-oeste.jpg", link: "https://viajesoeste-one.vercel.app" },
-        { title: "Instituto Maria Reina", image: "/images/maria-reina.png", link: "https://page-institucional-two.vercel.app" },
-        { title: "KOE DIGITAL", image: "/images/koe-digital.png", link: "https://koe-digital.vercel.app/" },
-        { title: "KLARK & TIGRE VERDE", image: "/images/clark-tigre.png", link: "https://www.clarkytigreverde.com/" },
-        { title: "ARTE A MEDIDA", image: "/images/arte-fondo.png", link: "https://arteamedida.vercel.app/" }
-    ]
+            // Pausa de contemplación entre transiciones
+            t += 1.8
+        }
+
+    }, { scope: containerRef })
 
     return (
-        <section ref={containerRef} id="visual-content" className="relative h-[700vh] w-full bg-black">
-            {/* Contenedor Sticky */}
-            <div className="sticky top-0 w-full h-screen overflow-hidden flex flex-col items-center justify-center bg-transparent">
-                
-                {/* Header (Fades out) */}
-                <motion.div 
-                    style={{ opacity: headerOpacity }}
-                    className="absolute inset-0 flex flex-col items-center justify-center z-[5] text-center w-full px-4 pointer-events-none"
-                >
-                    <motion.div
-                        initial={{ y: 150, opacity: 0, scale: 0.9 }}
-                        whileInView={{ y: 0, opacity: 1, scale: 1 }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        viewport={{ once: true, amount: 0.1 }}
-                        className="flex flex-col items-center justify-center max-w-full"
+        <section
+            ref={containerRef}
+            id="visual-content"
+            className="relative w-full bg-black"
+            style={{ height: `${PROJECTS.length * 150}vh` }}
+        >
+            {/* Panel fijo sticky */}
+            <div className="sticky top-0 w-full h-screen overflow-hidden">
+
+                {/* ─── Capas de imágenes apiladas ─── */}
+                {PROJECTS.map((proj, i) => (
+                    <div
+                        key={i}
+                        className={`vc-panel-${i} absolute inset-0 w-full h-full`}
+                        style={{ zIndex: i + 1 }}
                     >
-                        <h2 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[rgba(255,255,255,0.9)] via-[rgba(200,200,200,0.8)] to-[rgba(150,150,150,0.6)] leading-none select-none text-center drop-shadow-2xl mb-6">
-                            RESPALDO VISUAL
-                        </h2>
-                        <div className="border-l-4 border-accent pl-6 inline-block bg-black/50 p-6 rounded-2xl backdrop-blur-md max-w-4xl mx-auto shadow-2xl">
-                            <p className="text-xl md:text-2xl font-medium text-white/90 text-left leading-relaxed">
-                                <ScrambleText duration={0.8} text="Cada proyecto está diseñado con un objetivo claro: comunicar mejor, generar confianza y convertir visitas en clientes." />
-                            </p>
+                        {/* Imagen a pantalla completa */}
+                        <div className={`vc-scale-${i} absolute inset-0 w-full h-full origin-center`}>
+                            <Image
+                                src={proj.image}
+                                alt={proj.title}
+                                fill
+                                sizes="100vw"
+                                className="object-cover"
+                                priority={i === 0}
+                            />
                         </div>
-                    </motion.div>
-                </motion.div>
 
-                {/* Stacking Images */}
-                {PROJECTS.map((col, index) => {
-                    const transforms = projectsTransform[index]
-                    return (
-                        <motion.div
-                            key={index}
-                            style={{ 
-                                opacity: transforms.opacity,
-                                clipPath: transforms.clipPath,
-                                zIndex: transforms.zIndex
+                        {/* Overlay muy sutil — solo para dar contraste al HUD */}
+                        <div
+                            className={`vc-overlay-${i} absolute inset-0 pointer-events-none`}
+                            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 50%, transparent 100%)", opacity: i === 0 ? 0.15 : 0 }}
+                        />
+
+                        {/* Botón de visita — centrado, invisible hasta hover */}
+                        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                            <Link
+                                href={proj.link}
+                                target="_blank"
+                                className="group pointer-events-auto flex items-center gap-3 px-7 py-4 rounded-full border border-white/25 bg-white/5 backdrop-blur-xl text-white/80 hover:bg-white/15 hover:border-white/60 hover:text-white transition-all duration-500 cursor-none opacity-0 group-hover:opacity-100 translate-y-3 hover:translate-y-0"
+                                style={{ opacity: 0, transition: "opacity 0.5s, transform 0.5s" }}
+                                onMouseEnter={e => {
+                                    const el = e.currentTarget as HTMLAnchorElement
+                                    el.style.opacity = "1"
+                                    el.style.transform = "translateY(0)"
+                                }}
+                                onMouseLeave={e => {
+                                    const el = e.currentTarget as HTMLAnchorElement
+                                    el.style.opacity = "0"
+                                    el.style.transform = "translateY(12px)"
+                                }}
+                            >
+                                <span className="text-sm font-bold tracking-widest uppercase">Visitar sitio</span>
+                                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </Link>
+                        </div>
+                    </div>
+                ))}
+
+                {/* ─── Línea de pulso de transición ─── */}
+                <div
+                    className="vc-line pointer-events-none absolute left-0 right-0 top-1/2 h-[1px] bg-white/60 z-[100]"
+                    style={{ transform: "scaleX(0)", transformOrigin: "left center" }}
+                />
+
+                {/* ─── HUD flotante (número + título + categoría) ─── */}
+                {PROJECTS.map((proj, i) => (
+                    <div
+                        key={i}
+                        className={`vc-hud-${i} absolute bottom-8 left-8 md:bottom-12 md:left-12 z-[50] pointer-events-none`}
+                        style={{ willChange: "transform, opacity" }}
+                    >
+                        <div className="flex items-end gap-3 mb-2">
+                            <span className="text-[3.5rem] md:text-[5rem] font-black text-white leading-none tabular-nums tracking-tighter opacity-90">
+                                {String(i + 1).padStart(2, "0")}
+                            </span>
+                            <span className="text-xl text-white/30 font-light mb-3 tabular-nums">
+                                /{String(PROJECTS.length).padStart(2, "0")}
+                            </span>
+                        </div>
+                        <p className="text-[11px] font-mono tracking-[0.3em] uppercase text-primary mb-1">
+                            {proj.category}
+                        </p>
+                        <h3 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight uppercase leading-none">
+                            {proj.title}
+                        </h3>
+                    </div>
+                ))}
+
+                {/* ─── Barra de progreso inferior ─── */}
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 z-[50]">
+                    {PROJECTS.map((_, i) => (
+                        <div
+                            key={i}
+                            className={`vc-progress-${i} absolute top-0 h-full bg-primary`}
+                            style={{
+                                left: `${(i / PROJECTS.length) * 100}%`,
+                                width: `${(1 / PROJECTS.length) * 100}%`,
+                                opacity: 0
                             }}
-                            className="absolute inset-0 w-full h-full bg-neutral-900 shadow-2xl origin-center"
-                        >
-                            {/* Scaled Inner Image Wrapper */}
-                            <motion.div 
-                                style={{ scale: transforms.scale }}
-                                className="absolute inset-0 w-full h-full"
-                            >
-                                {/* 1. Blurred Background Filler (Ocupa el 100% pase lo que pase) */}
-                                <Image
-                                    src={col.image}
-                                    alt="Background filler"
-                                    fill
-                                    sizes="100vw"
-                                    className="object-cover blur-[40px] opacity-60 scale-110"
-                                    priority={index === 0}
-                                />
-                                
-                                {/* 2. Main Image (Contenida sin recortes) */}
-                                <Image
-                                    src={col.image}
-                                    alt={col.title}
-                                    fill
-                                    sizes="100vw"
-                                    className="object-contain drop-shadow-2xl"
-                                    priority={index === 0}
-                                />
-                                {/* Gradiente oscuro para que el texto resalte */}
-                                <div className="absolute inset-0 bg-black/30 pointer-events-none" />
-                            </motion.div>
+                        />
+                    ))}
+                </div>
 
-                            {/* Floating Overlay Info */}
-                            <motion.div 
-                                style={{ opacity: transforms.overlayOpacity }}
-                                className="absolute inset-0 pointer-events-none"
-                            >
-                                {/* Center Link UI */}
-                                <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-                                    <Link 
-                                        href={col.link} 
-                                        target="_blank"
-                                        className="group relative w-48 h-48 sm:w-64 sm:h-64 rounded-[2rem] overflow-hidden flex flex-col items-center justify-center border-2 border-white/20 hover:border-white/80 bg-black/20 hover:bg-black/40 backdrop-blur-md transition-all duration-500 shadow-[0_0_40px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_0_80px_-15px_rgba(255,255,255,0.2)] hover:-translate-y-2 cursor-pointer pointer-events-auto"
-                                    >
-                                        {/* Link inner gradient */}
-                                        <div className="absolute inset-0 bg-gradient-to-b from-white/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                        
-                                        {/* Placeholder visual layout for the user to add the logo */}
-                                        <span className="text-white/80 group-hover:text-white font-black text-xl tracking-[0.2em] uppercase mb-4 transition-colors">
-                                            LOGO
-                                        </span>
-                                        <div className="w-16 h-16 rounded-full border border-dashed border-white/40 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-500">
-                                             <span className="text-[10px] text-white/50 text-center leading-tight">Tu<br/>Logo<br/>Aquí</span>
-                                        </div>
-                                        <span className="absolute bottom-6 text-xs font-bold text-white/50 group-hover:text-primary transition-colors duration-500 uppercase tracking-widest">
-                                            Ingresar
-                                        </span>
-                                    </Link>
-                                </div>
-                                
-                                {/* Bottom Right Title (Smaller Font) */}
-                                <div className="absolute bottom-8 right-8 md:bottom-12 md:right-12">
-                                    <h3 className="text-2xl md:text-3xl lg:text-4xl font-black text-white drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] tracking-tighter text-right uppercase">
-                                        {col.title}
-                                    </h3>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    )
-                })}
             </div>
         </section>
     )

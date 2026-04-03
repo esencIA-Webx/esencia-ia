@@ -1,6 +1,5 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import Link from "next/link"
 import { useRef } from "react"
@@ -8,33 +7,21 @@ import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import gsap from "gsap"
 import { useGSAP } from "@gsap/react"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-gsap.registerPlugin(useGSAP)
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(useGSAP, ScrollTrigger)
+}
 
 export function Hero() {
-    const ref = useRef(null)
-    const containerRef = useRef<HTMLDivElement>(null)
+    const ref = useRef<HTMLDivElement>(null)
 
-    // Framer motion hooks para parallax continuo vinculado al scroll 
-    // (GSAP ScrollTrigger scrub es idéntico, pero conservamos framer aquí
-    //  para no rehacer la lógica del background infinito que ya rinde bien).
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ["start start", "end start"],
-    })
-
-    const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-    const logoY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
-
-    const textX1 = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"])
-    const textX2 = useTransform(scrollYProgress, [0, 1], ["-25%", "0%"])
-
-    // GSAP Cinematic Entrance Timeline
+    // GSAP Cinematic Entrance Timeline and Scrolling
     useGSAP(() => {
+        // --- 1. Entrance Animations ---
         const tl = gsap.timeline({ defaults: { ease: "power4.out" } })
 
-        // Estado inicial
+        // Initial States for Entrance
         gsap.set(".hero-logo", { scale: 0.7, opacity: 0, rotateZ: -5 })
         gsap.set(".hero-stagger", { yPercent: 120, opacity: 0 })
         gsap.set(".scroll-indicator", { scaleY: 0, transformOrigin: "top" })
@@ -58,26 +45,48 @@ export function Hero() {
             ease: "expo.inOut"
         }, "-=0.5")
 
-    }, { scope: containerRef })
+        // --- 2. Inmersive Parallax Scroll with Inertia ---
+        // Setup initial properties exactly as they were in Framer Motion
+        gsap.set(".text-scroll-right", { x: "-25%", willChange: "transform" })
+        gsap.set(".text-scroll-left", { x: "0%", willChange: "transform" })
+        gsap.set(".parallax-bg", { willChange: "transform, opacity" })
+        gsap.set(".hero-logo-container", { willChange: "transform" })
+
+        const scrollTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ref.current,
+                start: "top top", // when the top of the element hits the top of the viewport
+                end: "bottom top", // when the bottom of the element hits the top of the viewport
+                scrub: 1.2, // Smooth inertia
+                invalidateOnRefresh: true, // Recalculate on resize
+            }
+        })
+
+        // Y parallax out and fade out the background container and logo
+        scrollTl.to(".parallax-bg", { y: "50%", opacity: 0, ease: "none" }, 0)
+        scrollTl.to(".hero-logo-container", { y: "100%", ease: "none" }, 0)
+
+        // Text horizontal slide parallax
+        scrollTl.to(".text-scroll-left", { x: "-25%", ease: "none" }, 0)
+        scrollTl.to(".text-scroll-right", { x: "0%", ease: "none" }, 0)
+
+    }, { scope: ref })
 
     return (
         <section ref={ref} className="relative flex h-screen items-center justify-center overflow-hidden bg-black">
             {/* Dynamic Background */}
-            <motion.div
-                style={{ y, opacity }}
-                className="absolute inset-0 z-0 flex flex-col items-center justify-center overflow-hidden"
-            >
+            <div className="parallax-bg absolute inset-0 z-0 flex flex-col items-center justify-center overflow-hidden">
                 {/* Typographic Scrolly Background */}
                 <div className="absolute flex flex-col gap-4 opacity-[0.04] pointer-events-none select-none z-0">
-                    <motion.div style={{ x: textX1 }} className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter">
+                    <div className="text-scroll-left text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter">
                         CREATIVIDAD DIGITAL CREATIVIDAD DIGITAL
-                    </motion.div>
-                    <motion.div style={{ x: textX2, WebkitTextStroke: "2px rgba(255,255,255,1)" }} className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent">
+                    </div>
+                    <div className="text-scroll-right text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter text-transparent" style={{ WebkitTextStroke: "2px rgba(255,255,255,1)" }}>
                         EXPERIENCIA WEB EXPERIENCIA WEB EXPERIENCIA WEB
-                    </motion.div>
-                    <motion.div style={{ x: textX1 }} className="text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter">
+                    </div>
+                    <div className="text-scroll-left text-[15vw] md:text-[12vw] font-black whitespace-nowrap leading-none tracking-tighter">
                         INNOVACIÓN IA INNOVACIÓN IA INNOVACIÓN IA
-                    </motion.div>
+                    </div>
                 </div>
 
                 {/* Noise Grain Overlay */}
@@ -88,22 +97,21 @@ export function Hero() {
 
                 {/* Atmosphere Gradients */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-black/60 to-black blur-3xl z-0 pointer-events-none mix-blend-overlay" />
-            </motion.div>
+            </div>
 
-            <div ref={containerRef} className="container relative z-10 mx-auto px-4 text-center">
+            <div className="container relative z-10 mx-auto px-4 text-center">
                 <div className="mb-8 flex flex-col items-center justify-center">
-                    <motion.div
-                        style={{ y: logoY }}
-                        className="hero-logo mb-8 relative w-32 h-32 md:w-40 md:h-40"
-                    >
-                        <Image
-                            src="/logo.png"
-                            alt="Esencia IA Logo"
-                            fill
-                            priority
-                            className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
-                        />
-                    </motion.div>
+                    <div className="hero-logo-container">
+                        <div className="hero-logo mb-8 relative w-32 h-32 md:w-40 md:h-40">
+                            <Image
+                                src="/logo.png"
+                                alt="Esencia IA Logo"
+                                fill
+                                priority
+                                className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                            />
+                        </div>
+                    </div>
 
                     <div className="overflow-hidden mb-4 p-2">
                         <h1 className="hero-stagger text-5xl font-black tracking-widest sm:text-8xl md:text-9xl relative inline-block">

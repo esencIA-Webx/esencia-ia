@@ -16,16 +16,20 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
         if (prefersReducedMotion) return
 
+        // Global ScrollTrigger configs for mobile fluidity
+        ScrollTrigger.config({ ignoreMobileResize: true })
+
         // Initialize Lenis with premium parameters
         const lenis = new Lenis({
-            duration: 1.4, // Slightly longer for that "premium" feel
+            duration: 1.1, // Reduced duration for faster, zippier scrolling
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential easing for smooth deceleration
             orientation: "vertical",
             gestureOrientation: "vertical",
             smoothWheel: true,
-            wheelMultiplier: 1.1,
-            touchMultiplier: 1.5,
-            lerp: 0.08, // The "magic" smoothness factor
+            syncTouch: true, // Force smooth inertia on mobile touch devices
+            wheelMultiplier: 1.6, // Increased to make scrolling cover more distance per wheel tick
+            touchMultiplier: 1.6, // Increased for mobile
+            lerp: 0.1, // Slightly higher lerp for faster responsiveness
         })
 
         // Expose lenis instance globally for use in other components (like parallax)

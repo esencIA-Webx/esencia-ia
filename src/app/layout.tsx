@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { CustomCursor } from "@/components/ui/CustomCursor";
+import { MagneticCursor } from "@/components/ui/MagneticCursor";
 import { BackgroundMedia } from "@/components/layout/BackgroundMedia";
+import { Preloader } from "@/components/layout/Preloader";
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -51,11 +52,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${interTight.variable} antialiased bg-black text-white selection:bg-primary/30`}
       >
-        <CustomCursor />
-        <BackgroundMedia />
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        <Preloader />
+        <MagneticCursor />
+        <div id="page-content" style={{ opacity: 0 }}>
+          <BackgroundMedia />
+          <SmoothScroll>
+            {children}
+          </SmoothScroll>
+        </div>
       </body>
     </html>
   );

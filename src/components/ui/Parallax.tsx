@@ -40,7 +40,7 @@ export function Parallax({ children, speed = 1, direction = "vertical", classNam
                     trigger: element,
                     start: "top bottom", // when the top of the element hits the bottom of the viewport
                     end: "bottom top", // when the bottom of the element hits the top of the viewport
-                    scrub: true, // sync animation with scroll
+                    scrub: 1.2, // use numeric value for inertia
                 },
             }
         )

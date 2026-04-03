@@ -69,9 +69,18 @@ export function AboutAwwwards() {
             duration: 0.4
         }, 0.12)
 
-        // 0.30 → 0.55 : Subtítulo y HUDs
-        tl.to(sub, { opacity: 1, x: 0, ease: "power2.out", duration: 0.2 }, 0.30)
+        // 0.30 → 0.50 : Subtítulo contenedor (margen y desplazamiento lateral)
+        tl.to(sub, { x: 0, ease: "power2.out", duration: 0.2 }, 0.30)
         tl.to([hud1, hud2], { opacity: 1, ease: "none", duration: 0.15 }, 0.30)
+
+        // Text scrub reveal (word by word)
+        const scrubWords = sel(".about-sub").querySelectorAll(".scrub-word")
+        tl.to(scrubWords, {
+            opacity: 1,
+            stagger: 0.02,
+            ease: "none",
+            duration: 0.25
+        }, 0.30) // Fades in simultaneously as it moves
 
         // 0.40 → 0.65 : Botón
         tl.to(btn, { opacity: 1, y: 0, ease: "power2.out", duration: 0.2 }, 0.40)
@@ -128,10 +137,16 @@ export function AboutAwwwards() {
                             </div>
                         </div>
 
-                        {/* Subtítulo */}
+                        {/* Subtítulo con Scrub Reveal */}
                         <div className="about-sub border-l-[4px] border-neutral-300 pl-6 lg:ml-2">
                             <p className="text-xl md:text-3xl xl:text-4xl text-neutral-600 leading-snug font-medium max-w-[95%]">
-                                Construimos presencia digital para marcas que quieren <span className="text-neutral-950 font-bold">liderar</span>, no perderse en el ruido.
+                                {"Construimos presencia digital para marcas que quieren ".split(" ").map((w, i) => (
+                                    <span key={`a-${i}`} className="scrub-word inline-block mr-[0.25em] opacity-20">{w}</span>
+                                ))}
+                                <span className="scrub-word inline-block mr-[0.25em] opacity-20 text-neutral-950 font-bold">liderar,</span>
+                                {"no perderse en el ruido.".split(" ").map((w, i) => (
+                                    <span key={`b-${i}`} className="scrub-word inline-block mr-[0.25em] opacity-20">{w}</span>
+                                ))}
                             </p>
                         </div>
 
