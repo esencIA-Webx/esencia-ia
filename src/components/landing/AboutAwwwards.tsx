@@ -7,8 +7,9 @@ import { ArrowRight } from "lucide-react"
 import gsap from "gsap"
 import { useGSAP } from "@gsap/react"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { SplitText } from "gsap/SplitText"
 
-gsap.registerPlugin(ScrollTrigger, useGSAP)
+gsap.registerPlugin(ScrollTrigger, useGSAP, SplitText)
 
 export function AboutAwwwards() {
     const containerRef = useRef<HTMLElement>(null)
@@ -73,9 +74,9 @@ export function AboutAwwwards() {
         tl.to(sub, { x: 0, ease: "power2.out", duration: 0.2 }, 0.30)
         tl.to([hud1, hud2], { opacity: 1, ease: "none", duration: 0.15 }, 0.30)
 
-        // Text scrub reveal (word by word)
-        const scrubWords = sel(".about-sub").querySelectorAll(".scrub-word")
-        tl.to(scrubWords, {
+        // Text scrub reveal (word by word) using SplitText
+        const split = new SplitText(".about-sub-text", { type: "words" })
+        tl.to(split.words, {
             opacity: 1,
             stagger: 0.02,
             ease: "none",
@@ -137,16 +138,10 @@ export function AboutAwwwards() {
                             </div>
                         </div>
 
-                        {/* Subtítulo con Scrub Reveal */}
+                        {/* Subtítulo con Scrub Reveal (SplitText) */}
                         <div className="about-sub border-l-[4px] border-neutral-300 pl-6 lg:ml-2">
-                            <p className="text-xl md:text-3xl xl:text-4xl text-neutral-600 leading-snug font-medium max-w-[95%]">
-                                {"Construimos presencia digital para marcas que quieren ".split(" ").map((w, i) => (
-                                    <span key={`a-${i}`} className="scrub-word inline-block mr-[0.25em] opacity-20">{w}</span>
-                                ))}
-                                <span className="scrub-word inline-block mr-[0.25em] opacity-20 text-neutral-950 font-bold">liderar,</span>
-                                {"no perderse en el ruido.".split(" ").map((w, i) => (
-                                    <span key={`b-${i}`} className="scrub-word inline-block mr-[0.25em] opacity-20">{w}</span>
-                                ))}
+                            <p className="about-sub-text text-xl md:text-3xl xl:text-4xl text-neutral-600 leading-snug font-medium max-w-[95%] opacity-20">
+                                Construimos presencia digital para marcas que quieren <span className="text-neutral-950 font-bold">liderar,</span> no perderse en el ruido.
                             </p>
                         </div>
 

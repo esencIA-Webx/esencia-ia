@@ -3,6 +3,11 @@
 import { useEffect, useRef } from "react"
 import Image from "next/image"
 import gsap from "gsap"
+import { SplitText } from "gsap/SplitText"
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(SplitText)
+}
 
 export function Preloader() {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -38,9 +43,10 @@ export function Preloader() {
 
         // ── 3. Contador 0 → 100 ──
         const counter = { value: 0 }
+        
         tl.to(counter, {
             value: 100,
-            duration: 1.6,
+            duration: 2.2,
             ease: "power2.inOut",
             onUpdate: () => {
                 if (counterRef.current) {
@@ -48,6 +54,25 @@ export function Preloader() {
                 }
             }
         }, 0.3)
+
+        // ── 3b. Label Split (Independiente para no bloquear el timeline principal) ──
+        if (document.querySelector(".preloader-label")) {
+            const labelSplit = new SplitText(".preloader-label", { type: "chars" })
+            gsap.set(labelSplit.chars, { opacity: 0.2 })
+
+            gsap.to(labelSplit.chars, {
+                opacity: 1,
+                stagger: {
+                    each: 0.05,
+                    from: "random",
+                    repeat: -1,
+                    yoyo: true
+                },
+                duration: 0.5,
+                ease: "none",
+                delay: 0.3
+            })
+        }
 
         // ── 4. SALIDA — cubierta con clip-path que sube en 3 franjas ──
         // Partimos el overlay en tres para recrear el efecto "venetian blind" 3D
@@ -89,6 +114,7 @@ export function Preloader() {
         }, "+=0.15")
 
     }, [])
+
 
     return (
         <div
@@ -139,7 +165,7 @@ export function Preloader() {
                 </div>
 
                 {/* Label inferior */}
-                <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/30 mt-1">
+                <p className="preloader-label text-[10px] font-mono tracking-[0.4em] uppercase text-white/30 mt-1">
                     Cargando experiencia
                 </p>
             </div>

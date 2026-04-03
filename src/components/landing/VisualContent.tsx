@@ -6,9 +6,10 @@ import Image from "next/image"
 import gsap from "gsap"
 import { useGSAP } from "@gsap/react"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin"
 
 if (typeof window !== "undefined") {
-    gsap.registerPlugin(useGSAP, ScrollTrigger)
+    gsap.registerPlugin(useGSAP, ScrollTrigger, ScrambleTextPlugin)
 }
 
 const PROJECTS = [
@@ -83,13 +84,23 @@ export default function VisualContent() {
                 ease: "power2.in"
             }, t + 0.1)
 
-            // HUD: el nuevo aparece desde abajo
+            // HUD: el nuevo aparece desde abajo con efecto scramble en el título
             tl.to(`.vc-hud-${i}`, {
                 autoAlpha: 1,
                 y: 0,
                 duration: 0.6,
                 ease: "power2.out"
             }, t + 0.7)
+
+            tl.to(`.vc-title-${i}`, {
+                scrambleText: {
+                    text: PROJECTS[i].title,
+                    chars: "upperCase",
+                    speed: 0.3,
+                    revealDelay: 0.1
+                },
+                duration: 0.8
+            }, t + 0.9)
 
             // Pulso de línea separadora al transicionar
             tl.fromTo(`.vc-line`, {
@@ -199,8 +210,8 @@ export default function VisualContent() {
                         <p className="text-[11px] font-mono tracking-[0.3em] uppercase text-primary mb-1">
                             {proj.category}
                         </p>
-                        <h3 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight uppercase leading-none">
-                            {proj.title}
+                        <h3 className={`vc-title-${i} text-3xl md:text-5xl font-extrabold text-white tracking-tight uppercase leading-none`}>
+                            {i === 0 ? proj.title : ""}
                         </h3>
                     </div>
                 ))}

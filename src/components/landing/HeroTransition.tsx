@@ -3,6 +3,13 @@
 import { motion, useTransform, useMotionValue, animate } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import NextImage from "next/image"
+import gsap from "gsap"
+import { useGSAP } from "@gsap/react"
+import { SplitText } from "gsap/SplitText"
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(useGSAP, SplitText)
+}
 
 // Puntos de anclaje de animación para emular el scroll original
 const MILESTONES = [0.0, 0.15, 0.48, 0.65, 0.77, 0.87, 1.0];
@@ -87,6 +94,42 @@ export function HeroTransition() {
             ease: "easeInOut"
         });
     }, [currentStep, smoothProgress]);
+
+    // --- GSAP PREMUM EFFECTS (SplitText) ---
+    useGSAP(() => {
+        if (!isMounted) return;
+
+        // Split the main "ESENCIA" text for a character-by-character entrance
+        const splitEsencia = new SplitText(".hero-main-title", { type: "chars" });
+        gsap.from(splitEsencia.chars, {
+            opacity: 0,
+            y: 50,
+            rotateX: -90,
+            stagger: 0.05,
+            duration: 1.2,
+            ease: "power4.out",
+            delay: 0.5
+        });
+
+        // Split lines for subtext
+        const splitSub = new SplitText(".hero-subtext", { type: "words,lines" });
+        gsap.from(splitSub.words, {
+            opacity: 0,
+            y: 20,
+            stagger: 0.03,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: ".hero-subtext",
+                start: "top 80%"
+            }
+        });
+
+        return () => {
+            splitEsencia.revert();
+            splitSub.revert();
+        }
+    }, { scope: containerRef, dependencies: [isMounted] });
 
     // --- SCROLL EVENT LISTENER & LOCK ---
     useEffect(() => {
@@ -389,7 +432,7 @@ export function HeroTransition() {
                                     }}
                                     className="flex items-end transform-gpu origin-center will-change-transform"
                                 >
-                                    <h1 className="text-[3rem] sm:text-[5rem] md:text-[8rem] lg:text-[10rem] xl:text-[10.5rem] font-black tracking-tighter leading-none whitespace-nowrap">
+                                    <h1 className="hero-main-title text-[3rem] sm:text-[5rem] md:text-[8rem] lg:text-[10rem] xl:text-[10.5rem] font-black tracking-tighter leading-none whitespace-nowrap">
                                         <span className="text-white">ESENC</span>
                                         <span className="relative group cursor-default">
                                             {/* The foreground text that fades to transparent to show its own background gradient clip */}
@@ -415,7 +458,7 @@ export function HeroTransition() {
                         {/* STACKED SUBTEXT */}
                         <div className="flex flex-col w-full pb-8 z-20">
                             <motion.div style={{ opacity: line1Opacity, y: line1Y }} className="w-full">
-                                <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold text-white/90 tracking-tight leading-tight md:leading-none">
+                                <h2 className="hero-subtext text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold text-white/90 tracking-tight leading-tight md:leading-none">
                                     realizamos diseño web
                                 </h2>
                             </motion.div>
